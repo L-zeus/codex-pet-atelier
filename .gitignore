@@ -1,0 +1,23 @@
+# User-provided images for LOCAL reference only; never publish without verified permission.
+/references/private/
+# Generation scratch, QA intermediates and local runs.
+/workruns/
+/.venv/
+/.pytest_cache/
+__pycache__/
+*.py[cod]
+.DS_Store
+# Local reports / keys / machine-specific files.
+/private/
+*.log
+.env
+.env.*
+!.env.example
+# Generated or derived pet artwork remains LOCAL until rights are verified.
+/pets/*
+!/pets/.gitkeep
+/assets/previews/
+/reports/
+/dist/
+/build/
+/references/REFERENCE_MANIFEST.json

@@ -1,0 +1,49 @@
+name: Engineering checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  code-only-tools:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.12', '3.14']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install -r requirements.txt
+      - name: Reject private inputs, artwork, archives and sensitive text in code-only Git scope
+        run: python scripts/audit_publication.py --history
+      - name: Offline synthetic tool tests (not pet acceptance)
+        run: python -m unittest discover -s tests -v
+      - name: Build and scan local code-only candidate (no upload)
+        run: python scripts/package_code.py --output "$RUNNER_TEMP/atelier-code-rc.zip"
+      - name: Test the independently extracted candidate
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import subprocess
+          import sys
+          import tempfile
+          from zipfile import ZipFile
+          sys.path.insert(0, 'scripts')
+          from package_code import PREFIX, check_archive
+          archive = Path(os.environ['RUNNER_TEMP']) / 'atelier-code-rc.zip'
+          check_archive(archive)
+          env = dict(os.environ, PYTHONNOUSERSITE='1')
+          env.pop('PYTHONPATH', None)
+          with tempfile.TemporaryDirectory(prefix='atelier-code-') as temporary:
+              with ZipFile(archive) as bundle:
+                  bundle.extractall(temporary)  # Exact safe member names checked above.
+              subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tests', '-v'],
+                             cwd=Path(temporary) / PREFIX, env=env, check=True)
+          PY
+      - name: State acceptance scope
+        run: echo 'CODE_ONLY_CHECKS; artwork, native GUI, rights and public release are not verified by CI.'
