@@ -6,7 +6,9 @@
 
 Small Python tools for native Codex pets. This code-only edition contains no character artwork or pet downloads. Independent community project; not an official OpenAI product.
 
-仓库：[L-zeus/codex-pet-atelier](https://github.com/L-zeus/codex-pet-atelier) · [发行页](https://github.com/L-zeus/codex-pet-atelier/releases) · [自动检查](https://github.com/L-zeus/codex-pet-atelier/actions)
+仓库：[L-zeus/codex-pet-atelier](https://github.com/L-zeus/codex-pet-atelier) · [v1.4.0-code-only](https://github.com/L-zeus/codex-pet-atelier/releases/tag/v1.4.0-code-only) · [自动检查](https://github.com/L-zeus/codex-pet-atelier/actions)
+
+下载：[工具 ZIP](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.4.0-code-only/codex-pet-atelier-code-1.4.0.zip) · [SHA-256 校验和](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.4.0-code-only/V1_4_SHA256SUMS.txt)。ZIP 内还有逐文件哈希清单；核对后再解压使用。
 
 ## 开始使用
 
@@ -66,7 +68,7 @@ Windows 使用 `.venv/Scripts/python.exe`。运行工具不需要 API 密钥或�
 .venv/bin/python scripts/package_code.py --check dist/codex-pet-atelier-code-1.4.0.zip
 ```
 
-代码 ZIP 含 `SHA256SUMS`、`RC_MANIFEST.json` 及许可范围说明。构建器拒绝覆盖已有输出。CI 运行内容审计、测试、构建和独立解压测试，权限为只读；发布由维护者在检查后执行。扫描不是无秘密证明，提交身份仍须单独检查。
+要复现已发布 ZIP，请从对应发行标签的源码构建。代码 ZIP 含 `SHA256SUMS`、`RC_MANIFEST.json` 及许可范围说明。构建器拒绝覆盖已有输出。CI 运行内容审计、测试、构建和独立解压测试，权限为只读；发布由维护者在检查后执行。扫描不是无秘密证明，提交身份仍须单独检查。
 
 ## 常见问题
 
