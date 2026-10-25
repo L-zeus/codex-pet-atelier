@@ -2,7 +2,7 @@
 
 **状态：待核对（UNVERIFIED）**。该状态描述资料缺口，不表示原图必然侵权。
 
-本地制作使用五张用户提供的参考图。图片可作为个人本地开发输入，不等于已获得在公开 GitHub 仓库中再分发原图或其衍生动画素材的许可。
+本地历史制作使用五张用户提供的参考图。本轮另接入三张 AI 辅助生成的新定稿图；用户明确说明它们参考了来源不明的旧立绘，因此新图及其衍生动画仍为 `UNVERIFIED`。AI 重绘和更换文件名不构成公开再分发许可。图片可作为个人本地开发输入，不等于已获得在公开 GitHub 仓库中再分发原图或其衍生动画素材的许可。
 
 ## 公开前逐项检查
 
@@ -16,13 +16,23 @@
 
 发布者需要自行核对：原创作者身份、作品具体授权条款或明确许可、允许的衍生与再分发范围、署名义务、商业使用限制（如有）。作者署名本身不能替代授权。
 
+## 本轮三张新定稿图
+
+| 本地文件 | 新候选 | 来源依据 | 原图/衍生公开权利 |
+| --- | --- | --- | --- |
+| `assets/public_canonical/blue_whale_maid_public.png` | `blue-whale-maid-renewal` | 私有交接包；AI 辅助生成并参考旧图 | `UNVERIFIED` |
+| `assets/public_canonical/orange_scholar_public.png` | `orange-scholar-renewal` | 私有交接包；AI 辅助生成并参考旧图 | `UNVERIFIED` |
+| `assets/public_canonical/silver_dragon_public.png` | `silver-dragon-renewal` | 私有交接包；AI 辅助生成并参考旧图 | `UNVERIFIED` |
+
+这些图片、固定母图、逐行生成图、图集、GIF、接触图、截图与本地候选 ZIP 均不进入 GitHub。新图用于本地重建，不能仅因目录包含 `public` 而升级权利状态。原图和衍生输出的 SHA-256 及制作对应关系保存在本地交付记录中。无需为本地结构检查伪造 `VERIFIED` 或放宽正式发行门禁。
+
 ## 许可设计
 
 - **代码和文档**：维护者于2026-10-23明确确认采用 [MIT](../LICENSE)，范围见 [ASSET_LICENSE.md](../ASSET_LICENSE.md)。
 - **美术/角色/动画**：不自动适用 MIT；只有确有许可权时才可选择适用的素材许可证（例如自己原创并愿意开放时使用 CC BY 4.0），并写明版权归属及署名要求。
 - **未经授权/权利未知**：不得公开原图、衍生角色定稿图、精灵图、GIF、含素材的 Release ZIP；可先公开不含受限美术的程序脚本和文档，但不要暗示有可安装的角色包。
 
-`.gitignore` 排除 `references/private/`，但这不是版权审计的替代。准备 Release 时仍需要对每个实际发布文件做人工确认。
+`.gitignore` 排除 `references/private/` 和 `assets/public_canonical/`，但这不是版权审计的替代。准备 Release 时仍需要对每个实际发布文件做人工确认。
 
 ## 当前执行边界
 

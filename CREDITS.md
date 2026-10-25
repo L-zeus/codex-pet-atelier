@@ -2,6 +2,7 @@
 
 - Project maintenance and publication: [L-zeus](https://github.com/L-zeus). Code and documentation were developed with Codex assistance.
 - Local animation workflow: AI-assisted character and animation generation through imagegen, followed by deterministic extraction, compositing, validation and human/agent review. The artwork is not represented as entirely hand drawn.
+- Three replacement canonical images: supplied in the private final handoff, AI-assisted and based on earlier reference artwork of unknown origin. Their original source permissions and the rights to redistribute derived animation remain unverified. They are used for local renewal candidates and are not distributed with the toolkit.
 - Original five reference images: supplied privately; author, original source, creation date, third-party character status and redistribution permission have not been established. No original artist credit is invented. Neither reference images nor derived artwork are distributed here.
 - Native pet format and workflow reference: OpenAI's [hatch-pet](https://github.com/openai/skills/tree/main/skills/.curated/hatch-pet). Referenced, not bundled.
 - Image processing dependency: [Pillow](https://python-pillow.github.io/). Installed separately under its own license.

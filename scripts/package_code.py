@@ -12,7 +12,7 @@ from zipfile import BadZipFile, ZipFile, ZipInfo, ZIP_DEFLATED
 from audit_publication import LIMIT, inspect
 from petlib import digest, reject_symlink_chain
 
-PREFIX = 'codex-pet-atelier-code-1.4.0'
+PREFIX = 'codex-pet-atelier-code-1.5.0'
 # Explicit file names only. New files require a reviewed change to this list.
 FILES = (
     '.github/workflows/validate.yml', '.gitignore', 'AGENTS.md', 'CHANGELOG.md',
@@ -23,7 +23,7 @@ FILES = (
     'docs/PRODUCTION.md', 'docs/PROJECT_PLAN.md', 'pets/.gitkeep', 'references/README.md',
     'requirements.txt', 'scripts/audit_motion.py', 'scripts/audit_publication.py',
     'scripts/clean_chroma.py', 'scripts/extract_companion_frames.py', 'scripts/install_pet.py',
-    'scripts/package_code.py', 'scripts/package_release.py', 'scripts/petlib.py',
+    'scripts/package_code.py', 'scripts/package_local.py', 'scripts/package_release.py', 'scripts/petlib.py',
     'scripts/preview_pet.py', 'scripts/validate_pet.py', 'tests/test_chroma.py',
     'tests/test_code_package.py', 'tests/test_companion.py', 'tests/test_publication.py',
     'tests/test_tools.py',

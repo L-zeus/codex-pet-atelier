@@ -1,6 +1,16 @@
-# Codex Pet Atelier — 项目实施与验收方案 V1.3
+# Codex Pet Atelier — 项目实施与验收方案
 
-更新：2026-10-23。本文保留实施规范与路线，完成状态须结合实际报告。
+更新：2026-10-25。本文保留实施规范与路线，完成状态须结合实际报告。
+
+## V1.5 Code-only 发行与新绘基础反馈
+
+本次只发布代码 ZIP 和 SHA-256 校验清单，沿用现有公开仓库和历史。新绘三角色的基础显示与运动由用户报告通过，记录 `USER_REPORTED_GUI_BASIC_PASS`；九状态逐项观察未完成，不填写全项通过。美术权利仍为 UNVERIFIED，图集、GIF、原图和角色安装 ZIP 不上传。
+
+## 最终交接：新图本地重建
+
+本轮以三张新定稿图重建 `blue-whale-maid-renewal`、`orange-scholar-renewal`、`silver-dragon-renewal`，复用现有原生 Pets 工具链，保留旧三套资源、安装和 Git 历史。新角色的当前视觉基准见 [角色规范](CHARACTER_SPECS.md)，不套用旧版蓝鲸短裙全肩、书本侧别或旧云灵描述。
+
+用户补充的新图参考了来源不明的旧立绘，公开权利仍为 `UNVERIFIED`。三张图、重建动画、GIF和截图留在本机；`assets/public_canonical/` 的名称不构成公开许可。先完成能够完成的生成、修复、校验、私人安装候选和文档；生成不完整保持 `ART_PENDING`，视觉未通过不称为可用。代码与文档继续采用 MIT；V1.5 正式代码发行使用 `v1.5.0-code-only` 标签，旧 rc1 候选保留。GitHub 美术发行继续阻塞，不能以新图、AI 重绘或 LOCAL_ONLY ZIP 代替权利及客户端证据。
 
 ## V1.4 发行范围
 

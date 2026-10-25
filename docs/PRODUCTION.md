@@ -1,5 +1,7 @@
 # 私有制作流程
 
+2026-10-23 renewal 制作使用 `assets/public_canonical/` 三张交接新图作为固定母图，分别生成独立的 `-renewal` ID。该目录、动画与 GIF 均忽略且仅本地保存；新图参考了未知来源旧图，不能因重新生成就转为可公开。当前角色与道具侧别见[角色规范](CHARACTER_SPECS.md)顶部，以下五图选取与云灵说明只适用于历史版本。保留原三套源包、安装文件与 Git 历史。
+
 先完整阅读 `AGENTS.md`、`CODEX_PROMPT.md`、[项目方案](PROJECT_PLAN.md)、[角色规范](CHARACTER_SPECS.md)与[权利说明](ASSET_RIGHTS.md)。本流程描述操作要求，不是完成记录；当前事实以本地 `reports/V1_3_FINAL_REPORT.md` 与机器摘要为准；`FINAL_REPORT.md` 是 V1 蓝发历史记录。
 
 ## 准备

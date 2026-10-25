@@ -23,7 +23,7 @@
 
 ## 私有输入与许可证
 
-`references/private/`、`workruns/`、本地报告和私有预览不得 stage、commit、push 或进入公开 ZIP。`git add -f` 不能绕过授权门禁。原图与衍生物公开权利未知时，只能提交允许公开的独立代码和不含私有信息的文字。
+`references/private/`、`assets/public_canonical/`、`workruns/`、本地报告和私有预览不得 stage、commit、push 或进入公开 ZIP。`git add -f` 不能绕过授权门禁。原图与衍生物公开权利未知时，只能提交允许公开的独立代码和不含私有信息的文字。
 
 自有代码和文档采用 MIT；不要给五张原图、角色设计、生成图或动画套用 MIT。公开前依据 `ASSET_RIGHTS.md` 核对原作者、授权范围、署名、许可证和证明，逐个绑定实际发行资产。
 

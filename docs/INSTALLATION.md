@@ -2,6 +2,18 @@
 
 这些步骤适用于已经生成并通过视觉 QA 的本地角色包。若报告为 `ART_PENDING` 或 `QA_FAILED`，先完成制作或修复；不要把缺失的图集替换成测试夹具。素材权利未确认时，候选包与预览保存在 `workruns/`，不放入公开仓库。
 
+## 本轮候选与原有宠物并存
+
+新图重建候选使用 `blue-whale-maid-renewal`、`orange-scholar-renewal`、`silver-dragon-renewal` 三个新 ID；旧三套宠物继续保留。先确认候选具体状态，生成或视觉尚未通过时不能把“已复制文件”记为可用。旧包的客户端使用反馈不证明新包已经验收。
+
+私人安装 ZIP 内的角色目录仍含 `pet.json` 与 `spritesheet.webp`；顶层另附 `LOCAL_ONLY_NOTICE.txt` 和哈希收据。解压后把角色目录传给工具，不能把 ZIP 顶层或收据当作宠物包。权利未确认的 ZIP 仅留本机，不上传 GitHub 或其他公开附件。
+
+```bash
+.venv/bin/python scripts/package_local.py path/to/blue-whale-maid-renewal --output dist/blue-whale-maid-renewal-local.zip
+```
+
+该命令只生成带清晰范围说明的本地安装候选；结构通过、离线视觉通过、文件安装、九状态真实客户端观察和公开权利分别记录。
+
 ## 1. 检查与预览
 
 Code-only toolkit 不附带三角色源包。以下命令假定你已经有一个有权使用、通过视觉检查的真实包 `path/to/blue-whale-maid/`；替换为实际路径，目录名必须与 `pet.json` 的 `id` 一致。不要把工具 ZIP 当作角色 ZIP。

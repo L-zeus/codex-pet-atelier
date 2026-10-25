@@ -21,3 +21,6 @@ __pycache__/
 /dist/
 /build/
 /references/REFERENCE_MANIFEST.json
+
+# New handoff art is derived from references with unresolved rights. Local only.
+/assets/public_canonical/

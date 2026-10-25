@@ -18,6 +18,7 @@ from petlib import COUNTS, DURATIONS, STATES, digest, validate, write_json
 from preview_pet import gif_bytes, preview
 from install_pet import install
 from package_release import package_release
+from package_local import package_local, NOTICE as LOCAL_NOTICE
 from audit_motion import audit
 
 
@@ -86,6 +87,40 @@ class ToolsTests(unittest.TestCase):
         self.assertTrue(result['ok'], result)
         self.assertEqual((result['used_cells'], result['unused_cells']), (57, 15))
         self.assertEqual(result['visual_qa'], 'NOT_EXECUTED')
+
+    def test_private_zip_installs_without_claiming_release_approval(self):
+        output = self.root / 'local.zip'
+        result = package_local(self.package, output)
+        self.assertEqual(result['status'], 'LOCAL_ONLY_RIGHTS_PENDING')
+        self.assertFalse(result['public_release_approved'])
+        second = self.root / 'second.zip'
+        package_local(self.package, second)
+        self.assertEqual(output.read_bytes(), second.read_bytes())
+        with ZipFile(output) as archive:
+            self.assertEqual(set(archive.namelist()), {
+                'test-pet/pet.json', 'test-pet/spritesheet.webp',
+                'LOCAL_ONLY_NOTICE.txt', 'LOCAL_MANIFEST.json'})
+            self.assertEqual(archive.read('LOCAL_ONLY_NOTICE.txt'), LOCAL_NOTICE)
+            receipt = json.loads(archive.read('LOCAL_MANIFEST.json'))
+            self.assertEqual(receipt['rights'], 'UNVERIFIED')
+            self.assertFalse(receipt['public_release_approved'])
+            self.assertEqual(receipt['files']['test-pet/spritesheet.webp'],
+                             digest(self.package / 'spritesheet.webp'))
+            archive.extractall(self.root / 'unpacked')
+        installed = install(self.root / 'unpacked/test-pet', self.root / 'isolated-codex')
+        self.assertEqual(installed['status'], 'FILES_INSTALLED')
+        self.assertEqual(installed['spritesheet_sha256'], receipt['files']['test-pet/spritesheet.webp'])
+        with self.assertRaisesRegex(ValueError, 'overwrite'):
+            package_local(self.package, output)
+
+    def test_private_zip_refuses_broken_pet_or_source_output(self):
+        with self.assertRaisesRegex(ValueError, 'outside package'):
+            package_local(self.package, self.package / 'local.zip')
+        self.change_manifest(id='wrong')
+        output = self.root / 'broken.zip'
+        with self.assertRaisesRegex(ValueError, 'directory name'):
+            package_local(self.package, output)
+        self.assertFalse(output.exists())
 
     def test_wrong_dimensions(self):
         self.change_image(lambda img: img.resize((1136, 1385)))
