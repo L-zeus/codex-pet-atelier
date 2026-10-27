@@ -1,5 +1,7 @@
 # Codex Pet Atelier
 
+> **V1.6 本地状态（2026-10-27）**：五张原始参考立绘的作者、来源及再分发授权仍为 `UNVERIFIED`；用户此前对原创和 CC BY 4.0 的说明不能证明上游权利，素材暂不适用该许可。代码仍为 MIT。原版动画已完成本地结构与隔离安装复核，原生客户端基本兼容性仍待对候选包核验。
+
 用于 Codex 原生动画宠物的 Python 校验、预览、安装和打包工具。
 
 **V1.5.0 Code-only toolkit**：仅发行代码与文档。 公开版提供 MIT 许可的代码和文档，不包含角色美术。三张新定稿图已生成三套本地 `-renewal` 九行动画候选（每套57帧）；新图参考了来源不明的旧立绘，其公开再分发权仍为 `UNVERIFIED`。新旧角色安装 ZIP、GIF 和截图均不公开。项目只制作原生 Pets 与辅助工具。
@@ -64,7 +66,7 @@ Windows 使用 `.venv/Scripts/python.exe`。运行工具不需要 API 密钥或�
 | `audit_motion.py` | 比对 GIF 解码帧、时长和图集，记录动作边界诊断 |
 | `install_pet.py` | dry-run、冲突保护、替换备份及安装后哈希检查 |
 | `package_local.py` | 生成标明 LOCAL_ONLY 的本地安装候选，附哈希收据；不证明美术、视觉或 GUI 通过 |
-| `package_release.py` | 只有哈希绑定的权利、视觉、九状态 GUI 证据通过才生成角色 ZIP |
+| `package_release.py` | 核验哈希绑定的素材权利、九行离线视觉及客户端基本兼容性证据后生成角色 ZIP |
 | `package_code.py` | 按明确文件白名单导出代码 ZIP，并校验成员、内容和 SHA-256 |
 | `audit_publication.py` | 检查 Git 树及历史中的私有路径、媒体和有限敏感模式 |
 

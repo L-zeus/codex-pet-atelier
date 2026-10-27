@@ -35,8 +35,18 @@ def verify_evidence(evidence_path, validation):
             raise ValueError(f'{name} must PASS')
         if name != 'rights' and (not isinstance(section.get('reviewer'), str) or not section['reviewer'].strip()):
             raise ValueError(f'{name}.reviewer required')
-        if name in ('visual_qa', 'gui_qa') and section.get('rows') != {state: 'PASS' for state in STATES}:
-            raise ValueError(f'{name}.rows must PASS all nine states')
+        if name == 'visual_qa' and section.get('rows') != {state: 'PASS' for state in STATES}:
+            raise ValueError('visual_qa.rows must PASS all nine states')
+        if name == 'gui_qa':
+            rows = section.get('rows')
+            if not isinstance(rows, dict) or set(rows) != set(STATES) or any(value not in ('PASS', 'NOT_RUN') for value in rows.values()):
+                raise ValueError('gui_qa.rows must record all nine states as PASS or NOT_RUN')
+            checks = section.get('checks')
+            # Preserve the previously accepted, complete nine-state evidence format.
+            if checks is None and all(value == 'PASS' for value in rows.values()):
+                pass
+            elif not isinstance(checks, dict) or any(checks.get(key) != 'PASS' for key in ('load', 'display', 'movement')):
+                raise ValueError('gui_qa.checks must PASS load, display, and movement')
         entries = section.get('evidence')
         if not isinstance(entries, list) or not entries:
             raise ValueError(f'{name} needs actual evidence files')

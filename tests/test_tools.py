@@ -373,6 +373,37 @@ class ToolsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'does not match'):
             package_release(self.package, path, self.root / 'release.zip')
 
+    def test_package_gui_basic_pass_allows_untriggered_states(self):
+        path, data = self.make_evidence()
+        data['gui_qa']['rows'] = {state: 'NOT_RUN' for state in STATES}
+        data['gui_qa']['rows']['idle'] = 'PASS'
+        data['gui_qa']['checks'] = {'load': 'PASS', 'display': 'PASS', 'movement': 'PASS'}
+        write_json(path, data)
+        result = package_release(self.package, path, self.root / 'release.zip')
+        self.assertEqual(result['status'], 'LOCAL_ZIP_CREATED')
+
+    def test_package_partial_gui_requires_basic_checks_and_no_failed_rows(self):
+        path, data = self.make_evidence()
+        data['gui_qa']['rows']['review'] = 'NOT_RUN'
+        data['gui_qa']['checks'] = {'load': 'PASS', 'display': 'PASS', 'movement': 'PASS'}
+        for key in ('load', 'display', 'movement'):
+            changed = copy.deepcopy(data)
+            changed['gui_qa']['checks'][key] = 'NOT_RUN'
+            write_json(path, changed)
+            with self.subTest(check=key), self.assertRaisesRegex(ValueError, 'gui_qa.checks'):
+                package_release(self.package, path, self.root / 'release.zip')
+        for status in ('FAIL', 'UNKNOWN'):
+            changed = copy.deepcopy(data)
+            changed['gui_qa']['rows']['review'] = status
+            write_json(path, changed)
+            with self.subTest(status=status), self.assertRaisesRegex(ValueError, 'gui_qa.rows'):
+                package_release(self.package, path, self.root / 'release.zip')
+        changed = copy.deepcopy(data)
+        changed['rights']['status'] = 'UNVERIFIED'
+        write_json(path, changed)
+        with self.assertRaisesRegex(ValueError, 'rights'):
+            package_release(self.package, path, self.root / 'release.zip')
+
     def test_package_missing_gui_and_visual_rows_blocked(self):
         path, data = self.make_evidence()
         for scope in ('gui_qa', 'visual_qa'):
