@@ -1,5 +1,7 @@
 # 本地安装与真实验收
 
+V1.7 使用 `blue-whale-maid-v17`、`orange-scholar-v17`、`silver-dragon-v17` 独立 ID。角色 ZIP 和校验和见 [README](../README.md)；用户报告客户端基础显示和移动通过，未自然触发的状态为 NOT_RUN。下文关于 renewal 私有候选和 code-only 包的说明是 V1.5 历史记录。
+
 这些步骤适用于已经生成并通过视觉 QA 的本地角色包。若报告为 `ART_PENDING` 或 `QA_FAILED`，先完成制作或修复；不要把缺失的图集替换成测试夹具。素材权利未确认时，候选包与预览保存在 `workruns/`，不放入公开仓库。
 
 ## 本轮候选与原有宠物并存

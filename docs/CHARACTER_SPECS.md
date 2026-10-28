@@ -1,5 +1,7 @@
 # 角色一致性规范 / Character Sheets
 
+> **V1.7 当前基准：** `blue_whale_maid_subtle_refine.png`、`orange_scholar_subtle_refine.png`、`silver_dragon_subtle_refine.png` 对应三个 `-v17` 角色；银龙的蓝云为独立伙伴。以下 renewal 与旧参考描述仅为历史规格，不覆盖本轮母图。
+
 ## 2026-10-23 本地重建基准
 
 本轮只以交接包三张新定稿图作为 `-renewal` 系列的视觉基准。它们由旧来源不明立绘参考而来，公开权利仍为 `UNVERIFIED`；目录名 `assets/public_canonical/` 不表示已公开或获准公开。三张原尺寸图保持原字节，固定适合单格的角色母图后逐行生成动作。旧角色、图集、安装和历史记录全部保留。
