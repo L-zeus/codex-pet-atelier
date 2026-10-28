@@ -2,6 +2,12 @@
 
 三套为 Codex 原生 Pets 制作的角色动画，以及校验、预览、安装和打包工具。项目由社区维护，**不是 OpenAI 官方产品**。
 
+## 下载 V1.8 工具增强版
+
+[代码包](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.8.0/codex-pet-atelier-code-1.8.0.zip) · [SHA-256 校验和](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.8.0/V1_8_SHA256SUMS.txt) · [使用说明](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.8.0/V1_8_USAGE.md) · [V1.8 Release](https://github.com/L-zeus/codex-pet-atelier/releases/tag/v1.8.0)
+
+工具包仅含代码和文档；角色资源仍从下方 V1.7 Release 单独获取。
+
 ## 下载 V1.7
 
 | 角色 | 原生宠物包 |
