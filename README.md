@@ -1,16 +1,18 @@
 # Codex Pet Atelier
 
+> **V1.7 发行准备中：** 三套角色包已经完成本地验收，GitHub Release 因连接问题尚未创建，下载暂不可用。下方列出拟发布文件；既有 [V1.5 code-only](https://github.com/L-zeus/codex-pet-atelier/releases/tag/v1.5.0-code-only) 仍可下载。
+
 三套为 Codex 原生 Pets 制作的角色动画，以及校验、预览、安装和打包工具。项目由社区维护，**不是 OpenAI 官方产品**。
 
-## 下载 V1.7
+## V1.7 待发布文件
 
 | 角色 | 原生宠物包 |
 | --- | --- |
-| 蓝发鲸鱼女仆 | [blue-whale-maid-v17-v1.7.0.zip](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/blue-whale-maid-v17-v1.7.0.zip) |
-| 橙花书灵 | [orange-scholar-v17-v1.7.0.zip](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/orange-scholar-v17-v1.7.0.zip) |
-| 银白龙姬 | [silver-dragon-v17-v1.7.0.zip](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/silver-dragon-v17-v1.7.0.zip) |
+| 蓝发鲸鱼女仆 | `blue-whale-maid-v17-v1.7.0.zip` |
+| 橙花书灵 | `orange-scholar-v17-v1.7.0.zip` |
+| 银白龙姬 | `silver-dragon-v17-v1.7.0.zip` |
 
-[全部母图、27 个 GIF 与浅深底接触图](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/codex-pet-atelier-v1.7.0-art-previews.zip) · [SHA-256 校验和](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/V1_7_SHA256SUMS.txt) · [素材署名与许可](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/ASSET_ATTRIBUTION.txt) · [Release 页面](https://github.com/L-zeus/codex-pet-atelier/releases/tag/v1.7.0)
+拟发布附件还包括：三张母图、27 个 GIF 与浅深底接触图组成的预览 ZIP，以及 SHA-256 清单和素材署名文件。Release 创建前这些附件不可下载。
 
 每个宠物 ZIP 包含 `<角色 ID>/pet.json` 和 `<角色 ID>/spritesheet.webp`。图集为 1536×1872 RGBA WebP，8 列×9 行、单格 192×208，包含 57 个动画帧和 15 个透明空格。预览包包含三张本轮基准图、每个角色的 9 个 GIF 和浅深底接触图。
 
