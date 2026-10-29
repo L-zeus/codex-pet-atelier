@@ -2,19 +2,21 @@
 
 三套为 Codex 原生 Pets 制作的角色动画，以及校验、预览、安装和打包工具。项目由社区维护，**不是 OpenAI 官方产品**。
 
-## 下载 V1.8 工具增强版
+## 安装原生宠物
 
-[代码包](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.8.0/codex-pet-atelier-code-1.8.0.zip) · [SHA-256 校验和](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.8.0/V1_8_SHA256SUMS.txt) · [使用说明](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.8.0/V1_8_USAGE.md) · [V1.8 Release](https://github.com/L-zeus/codex-pet-atelier/releases/tag/v1.8.0)
+选择角色后，在安装页面点击 **Open in Codex** 并在官方客户端完成安装。浏览器可能询问是否允许打开 Codex；实际安装与角色目录由客户端处理。
 
-工具包仅含代码和文档；角色资源仍从下方 V1.7 Release 单独获取。
+| 角色 | 安装页面 | 备用角色包 |
+| --- | --- | --- |
+| 蓝发鲸鱼女仆 | [打开安装页面](https://l-zeus.github.io/codex-pet-atelier/install/blue-whale-maid-v17/) | [V1.7 ZIP](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/blue-whale-maid-v17-v1.7.0.zip) |
+| 橙花书灵 | [打开安装页面](https://l-zeus.github.io/codex-pet-atelier/install/orange-scholar-v17/) | [V1.7 ZIP](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/orange-scholar-v17-v1.7.0.zip) |
+| 银白龙姬 | [打开安装页面](https://l-zeus.github.io/codex-pet-atelier/install/silver-dragon-v17/) | [V1.7 ZIP](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/silver-dragon-v17-v1.7.0.zip) |
 
-## 下载 V1.7
+安装页使用 V1.7 固定版本图集和[官方安装链接格式](https://learn.chatgpt.com/docs/app/commands)；客户端的一键安装仍需在用户设备上实际确认。手动安装、ZIP 和原生宠物动画保持可用。
 
-| 角色 | 原生宠物包 |
-| --- | --- |
-| 蓝发鲸鱼女仆 | [blue-whale-maid-v17-v1.7.0.zip](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/blue-whale-maid-v17-v1.7.0.zip) |
-| 橙花书灵 | [orange-scholar-v17-v1.7.0.zip](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/orange-scholar-v17-v1.7.0.zip) |
-| 银白龙姬 | [silver-dragon-v17-v1.7.0.zip](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/silver-dragon-v17-v1.7.0.zip) |
+## 下载工具与 V1.7 素材
+
+工具代码与校验和见[工具发行页面](https://github.com/L-zeus/codex-pet-atelier/releases)。`--open` 需要 V1.9 或更新的工具；历史 [V1.8 工具版](https://github.com/L-zeus/codex-pet-atelier/releases/tag/v1.8.0)仍可下载。工具包仅含代码和文档；角色资源从 V1.7 Release 单独获取。
 
 [全部母图、27 个 GIF 与浅深底接触图](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/codex-pet-atelier-v1.7.0-art-previews.zip) · [SHA-256 校验和](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/V1_7_SHA256SUMS.txt) · [素材署名与许可](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/ASSET_ATTRIBUTION.txt) · [Release 页面](https://github.com/L-zeus/codex-pet-atelier/releases/tag/v1.7.0)
 
@@ -42,7 +44,7 @@ unzip ~/Downloads/blue-whale-maid-v17-v1.7.0.zip -d workruns/downloaded-v17
 
 橙花和银龙使用各自 ZIP 与目录名，步骤相同。默认安装到 `${CODEX_HOME:-$HOME/.codex}/pets/<id>/`；遇到同名 ID 时安装器会拒绝覆盖，明确使用 `--replace` 时先备份。安装后在支持 Pets 的客户端刷新并选择角色，再使用可用的 Show pet 或 `/pet` 入口。Windows 使用 `.venv/Scripts/python.exe`。完整步骤和回退见[安装指南](docs/INSTALLATION.md)。
 
-官方支持 `codex://pets/install` 一键安装，但要求公开可访问的 HTTPS 图集直链。当前 V1.7 附件是角色 ZIP，未核实到独立的 HTTPS 图集直链，因此暂不提供一键安装链接；参见[官方链接格式](https://learn.chatgpt.com/docs/reference/commands)。手动安装时，macOS 默认目录是 `~/.codex/pets/`，Windows 默认是 `%USERPROFILE%\.codex\pets\`；如设置 `CODEX_HOME`，使用该目录下的 `pets`。同名目录先备份并核对，勿直接覆盖。
+手动安装时，macOS 默认目录是 `~/.codex/pets/`，Windows 默认是 `%USERPROFILE%\.codex\pets\`；如设置 `CODEX_HOME`，使用该目录下的 `pets`。同名目录先备份并核对，勿直接覆盖。
 
 ## 查看额度与预览动作
 

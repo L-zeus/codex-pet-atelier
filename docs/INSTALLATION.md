@@ -76,7 +76,9 @@ Computer Use 已明确拒绝控制 `com.openai.codex`；不得改用其他 GUI �
 
 ## V1.8 本地交互预览与额度
 
-下载并解压 [V1.7 Release](https://github.com/L-zeus/codex-pet-atelier/releases/tag/v1.7.0) 中的三个角色 ZIP。macOS 默认将所需角色目录放到 `~/.codex/pets/`；Windows 默认放到 `%USERPROFILE%\.codex\pets\`。如设置 `CODEX_HOME`，使用该目录下的 `pets`。已有同名目录时先备份，不要覆盖。随后在应用 Settings → Pets 刷新并选择。官方 `codex://pets/install` 需要公开 HTTPS 图集直链；当前发行附件是 ZIP，因此本项目暂不提供一键安装链接。
+可先进入[角色安装页面](https://l-zeus.github.io/codex-pet-atelier/)，选择角色并点击 **Open in Codex**，再在官方客户端完成安装。客户端的安装目录和 ID 由客户端决定；各角色的安装结果仍需在实际设备上确认。
+
+备用方式：下载并解压 [V1.7 Release](https://github.com/L-zeus/codex-pet-atelier/releases/tag/v1.7.0) 中的三个角色 ZIP。macOS 默认将所需角色目录放到 `~/.codex/pets/`；Windows 默认放到 `%USERPROFILE%\.codex\pets\`。如设置 `CODEX_HOME`，使用该目录下的 `pets`。已有同名目录时先备份，不要覆盖。随后在应用 Settings → Pets 刷新并选择。
 
 直接查看额度：在项目目录运行 `python3 scripts/codex_usage.py --open`，一次查询后自动打开本机私有页面；刷新时重新运行命令。Windows 使用 `py scripts\codex_usage.py --open`。页面位于 Git 忽略的 `workruns/`，请勿分享。也可用 `--output workruns/codex-usage.json` 写入仅本地的快照，供动作预览页手动导入。
 
