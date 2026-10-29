@@ -67,3 +67,18 @@ jobs:
           python scripts/quota_bubble.py uninstall --install-dir "$RUNNER_TEMP/QuotaBubble"
       - name: State acceptance scope
         run: echo 'Compile and synthetic tests only; native GUI and global hotkey require manual verification.'
+  windows-shortcut-check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile and check a temporary Shell shortcut
+        run: |
+          python -m py_compile scripts/windows_quota.py windows/quota_bubble.py
+          python -m unittest discover -s tests -p test_windows_quota.py -v
+      - name: State acceptance scope
+        run: echo 'Temporary shortcut and synthetic tests only; Windows GUI and global hotkey require manual verification.'

@@ -96,6 +96,8 @@ def main():
     for result in results:
         print(result['id'], result['status'])
     print('在 Codex 设置的 Pets 中刷新并选择角色。')
+    print('查看额度的建议快捷键：Mac ⌥Q；Windows Ctrl+Alt+Q。需先自行配置，也可更换。')
+    print('设置说明：docs/MACOS_QUOTA_HOTKEY.md；docs/WINDOWS_QUOTA_HOTKEY.md')
     return 0
 
 

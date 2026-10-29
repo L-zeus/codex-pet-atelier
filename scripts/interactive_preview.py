@@ -38,6 +38,8 @@ def build(packages, output):
     template = template.replace('href="style.css"', f'href="{relative_url(ROOT / "preview/style.css", output.parent)}"')
     template = template.replace('src="app.js"', f'src="{relative_url(ROOT / "preview/app.js", output.parent)}"')
     template = template.replace('href="../README.md"', f'href="{relative_url(ROOT / "README.md", output.parent)}"')
+    for name in ('MACOS_QUOTA_HOTKEY.md', 'WINDOWS_QUOTA_HOTKEY.md'):
+        template = template.replace(f'href="../docs/{name}"', f'href="{relative_url(ROOT / "docs" / name, output.parent)}"')
     config = json.dumps(sprites, ensure_ascii=False).replace('<', '\\u003c')
     template = template.replace('<!-- PET_ATLAS_CONFIG -->', f'<script type="application/json" id="initial-pets">{config}</script>')
     output.parent.mkdir(parents=True, exist_ok=True)

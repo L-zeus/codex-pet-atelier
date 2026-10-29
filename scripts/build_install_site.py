@@ -90,6 +90,13 @@ def document(title, content, prefix):
 <a href="{REPO}/releases/tag/v1.7.0">V1.7 发行资源</a></footer></body></html>'''
 
 
+def shortcut_hint():
+    return f'''<aside class="shortcut-hint"><strong>查看额度</strong> · Mac ⌥Q · Windows Ctrl+Alt+Q
+<p>先自行设置快捷键，可更换组合；Windows 功能需在本机验证。</p>
+<a href="{REPO}/blob/main/docs/MACOS_QUOTA_HOTKEY.md">Mac 设置</a> ·
+<a href="{REPO}/blob/main/docs/WINDOWS_QUOTA_HOTKEY.md">Windows 设置</a></aside>'''
+
+
 def build(output, release_dir=None, base_url=BASE):
     parsed = urlsplit(base_url)
     if parsed.scheme != 'https' or not parsed.netloc or parsed.query or parsed.fragment or parsed.username:
@@ -132,7 +139,7 @@ def build(output, release_dir=None, base_url=BASE):
 aria-label="{e(manifest['displayName'], quote=True)} 的待机图" style="background-image:url('{e(record['asset'], quote=True)}')"></div></div>
 <h2>{e(manifest['displayName'])}</h2><p class="details">{e(manifest['description'])}</p>
 <a class="button" href="install/{pet['id']}/">查看安装</a></article>''')
-        intro = '<p class="eyebrow">YOUR COMPANION, IN MOTION</p><h1>选一位伙伴，<br>带进 Codex。</h1><p class="lead">三位角色、九种原生动画。选择角色并在 Codex 中打开安装流程。</p>'
+        intro = '<p class="eyebrow">YOUR COMPANION, IN MOTION</p><h1>选一位伙伴，<br>带进 Codex。</h1><p class="lead">三位角色、九种原生动画。选择角色并在 Codex 中打开安装流程。</p>' + shortcut_hint()
         (site / 'index.html').write_text(document('选择你的宠物', intro + '<div class="cards">' + ''.join(cards) + '</div>', ''), encoding='utf-8')
         for record in records:
             pet, manifest = record['pet'], record['manifest']
@@ -143,6 +150,7 @@ aria-label="{e(manifest['displayName'], quote=True)} 的待机图" style="backgr
 <div><p class="eyebrow">V1.7 · CODEX NATIVE PET</p><h1>{e(manifest['displayName'])}</h1>
 <p class="details">{e(manifest['description'])}</p><p><a class="button" href="{e(record['uri'], quote=True)}">Open in Codex ↗</a></p>
 <p class="details">点击后允许浏览器打开 Codex，并在官方界面完成安装。应用中的名称及目录由客户端决定。</p>
+{shortcut_hint()}
 <p><a class="button secondary" href="{zip_url}">下载 ZIP 备用安装</a></p>
 <p class="details">如果 Codex 打开后没有安装窗口，可能是该客户端尚未启用安装入口。可下载 ZIP，或按 <a href="{REPO}#校验和安装">README</a> 配置 Python 环境后，在项目目录执行 <code>.venv/bin/python scripts/install_release_pet.py {pet['id']}</code>（Windows 使用 <code>.venv/Scripts/python.exe</code>），再刷新宠物列表。</p>
 <details><summary>无法打开？手动安装</summary><ol><li>下载<a href="{zip_url}">此角色的 V1.7 ZIP</a>，并对照 <a href="{catalog['releaseBase']}V1_7_SHA256SUMS.txt">SHA-256</a> 校验。</li>

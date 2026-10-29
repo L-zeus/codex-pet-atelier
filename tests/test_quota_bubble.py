@@ -14,6 +14,29 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import quota_bubble
 
 
+class ShortcutEditorTests(unittest.TestCase):
+    def test_opens_exact_existing_shortcut_without_changing_binding(self):
+        responses = [subprocess.CompletedProcess([], 0, stdout='Other\nCodex Quota\n'),
+                     subprocess.CompletedProcess([], 0, stdout='')]
+        with mock.patch.object(quota_bubble.sys, 'platform', 'darwin'), \
+             mock.patch.object(quota_bubble.shutil, 'which', return_value='/usr/bin/shortcuts'), \
+             mock.patch.object(quota_bubble.subprocess, 'run', side_effect=responses) as run:
+            self.assertEqual(quota_bubble.open_shortcut_editor()['status'], 'OPENED')
+        self.assertEqual([call.args[0] for call in run.call_args_list],
+                         [['/usr/bin/shortcuts', 'list'], ['/usr/bin/shortcuts', 'view', 'Codex Quota']])
+
+    def test_missing_or_duplicate_shortcut_is_not_opened(self):
+        for output in ('Unrelated\n', 'Codex Quota\nCodex Quota\n'):
+            with self.subTest(output=output), \
+                 mock.patch.object(quota_bubble.sys, 'platform', 'darwin'), \
+                 mock.patch.object(quota_bubble.shutil, 'which', return_value='/usr/bin/shortcuts'), \
+                 mock.patch.object(quota_bubble.subprocess, 'run',
+                                   return_value=subprocess.CompletedProcess([], 0, stdout=output)) as run:
+                with self.assertRaises(ValueError):
+                    quota_bubble.open_shortcut_editor()
+                self.assertEqual(run.call_count, 1)
+
+
 class InstallerTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
