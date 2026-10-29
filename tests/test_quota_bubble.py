@@ -83,6 +83,46 @@ class InstallerTests(unittest.TestCase):
         self.assertEqual(self.install_fixture()['status'], 'INSTALLED')
         self.assertTrue(quota_bubble.verify(self.target)['installed'])
 
+    def test_failed_upgrade_restores_previous_installation(self):
+        self.install_fixture()
+        config_path = self.target / 'config.json'
+        config = json.loads(config_path.read_text())
+        config['codexHome'] = '/synthetic-original-home'
+        config_path.write_text(json.dumps(config))
+        original_config = config_path.read_bytes()
+        original_verify = quota_bubble.verify
+
+        def verify_with_failure(path, require_runtime=True):
+            if Path(path) == self.target and require_runtime:
+                raise ValueError('synthetic post-install verification failure')
+            return original_verify(path, require_runtime)
+
+        with mock.patch.object(quota_bubble, 'verify', side_effect=verify_with_failure):
+            with self.assertRaisesRegex(ValueError, 'synthetic post-install verification failure'):
+                self.install_fixture()
+        self.assertEqual(config_path.read_bytes(), original_config)
+        self.assertTrue(quota_bubble.verify(self.target)['installed'])
+
+    def test_upgrade_preserves_configured_codex_home_when_environment_is_unset(self):
+        self.install_fixture()
+        config_path = self.target / 'config.json'
+        config = json.loads(config_path.read_text())
+        config['codexHome'] = '/synthetic-custom-codex-home'
+        config_path.write_text(json.dumps(config))
+        with mock.patch.dict(os.environ):
+            os.environ.pop('CODEX_HOME', None)
+            self.install_fixture()
+        self.assertEqual(json.loads(config_path.read_text())['codexHome'], config['codexHome'])
+
+    def test_upgrade_keeps_valid_explicit_codex_cli(self):
+        self.install_fixture()
+        config_path = self.target / 'config.json'
+        config = json.loads(config_path.read_text())
+        config['codexCLI'] = '/usr/bin/true'
+        config_path.write_text(json.dumps(config))
+        self.install_fixture()  # The mocked PATH now resolves to /usr/bin/false.
+        self.assertEqual(json.loads(config_path.read_text())['codexCLI'], '/usr/bin/true')
+
 
 @unittest.skipIf(os.name == 'nt', 'signal behavior is specific to POSIX')
 class ProcessCleanupTests(unittest.TestCase):

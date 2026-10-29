@@ -4,17 +4,30 @@
 
 ## 安装原生宠物
 
-选择角色后，在安装页面点击 **Open in Codex** 并在官方客户端完成安装。浏览器可能询问是否允许打开 Codex；实际安装与角色目录由客户端处理。
+可以使用 V2.0 工具包安装三位角色，无需下载宠物 ZIP 或依赖网页跳转。先从[发行页面](https://github.com/L-zeus/codex-pet-atelier/releases)获取 V2.0 或更新版本的工具包并校验其 SHA-256；在当前开发候选阶段，也可检出 [PR #1](https://github.com/L-zeus/codex-pet-atelier/pull/1) 的源码。V1.9 工具包不包含以下备用安装器。
 
-| 角色 | 安装页面 | 备用角色包 |
-| --- | --- | --- |
-| 蓝发鲸鱼女仆 | [打开安装页面](https://l-zeus.github.io/codex-pet-atelier/install/blue-whale-maid-v17/) | [V1.7 ZIP](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/blue-whale-maid-v17-v1.7.0.zip) |
-| 橙花书灵 | [打开安装页面](https://l-zeus.github.io/codex-pet-atelier/install/orange-scholar-v17/) | [V1.7 ZIP](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/orange-scholar-v17-v1.7.0.zip) |
-| 银白龙姬 | [打开安装页面](https://l-zeus.github.io/codex-pet-atelier/install/silver-dragon-v17/) | [V1.7 ZIP](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/silver-dragon-v17-v1.7.0.zip) |
+在解压后的工具目录中，macOS 或 Linux 运行：
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python scripts/install_release_pet.py --all --dry-run
+.venv/bin/python scripts/install_release_pet.py --all
+```
+
+Windows PowerShell 使用 `py -3 -m venv .venv`，然后将上述 `.venv/bin/python` 换成 `.\.venv\Scripts\python.exe`。也可将 `--all` 换成表中的角色 ID。工具从固定版本 HTTPS 地址读取 V1.7 图集并核验 SHA-256；同名且内容不同的角色不会被覆盖。安装完成后在 Codex 的 Pets 设置中刷新并选择。
+
+也可以尝试下方安装页面中的 **Open in Codex**。部分客户端会打开 Codex 而不显示安装窗口；遇到这种情况请使用上面的工具或 ZIP 备用方案。
+
+| 角色 | 角色 ID | 安装页面 | 备用角色包 |
+| --- | --- | --- | --- |
+| 蓝发鲸鱼女仆 | `blue-whale-maid-v17` | [打开安装页面](https://l-zeus.github.io/codex-pet-atelier/install/blue-whale-maid-v17/) | [V1.7 ZIP](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/blue-whale-maid-v17-v1.7.0.zip) |
+| 橙花书灵 | `orange-scholar-v17` | [打开安装页面](https://l-zeus.github.io/codex-pet-atelier/install/orange-scholar-v17/) | [V1.7 ZIP](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/orange-scholar-v17-v1.7.0.zip) |
+| 银白龙姬 | `silver-dragon-v17` | [打开安装页面](https://l-zeus.github.io/codex-pet-atelier/install/silver-dragon-v17/) | [V1.7 ZIP](https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/silver-dragon-v17-v1.7.0.zip) |
 
 安装页使用 V1.7 固定版本图集和[官方安装链接格式](https://learn.chatgpt.com/docs/app/commands)；客户端的一键安装仍需在用户设备上实际确认。手动安装、ZIP 和原生宠物动画保持可用。
 
-如果点击后 Codex 打开但没有出现安装窗口，可按下方步骤创建 Python 虚拟环境、安装项目依赖，然后运行 `.venv/bin/python scripts/install_release_pet.py --all`（Windows 使用 `.venv/Scripts/python.exe`）。工具核验 V1.7 固定版本资源并安装三位角色；已有不同的同名角色会被保护，不会覆盖。完成后在 Codex 的 Pets 设置中刷新并选择。
+如果批量安装中途失败，提示会列出本次已安装的角色；解决原因后重新运行即可，已安装的相同资源会跳过。更新、卸载和离线 ZIP 安装见[安装指南](docs/INSTALLATION.md)。
 
 ## 下载工具与 V1.7 素材
 

@@ -65,7 +65,13 @@ def install_selected(pets, release_dir=None, codex_home=None, dry_run=False):
                 install(package, codex_home, dry_run=True)
                 pending.append((pet, package))
         for pet, package in pending:
-            result = install(package, codex_home, dry_run=dry_run)
+            try:
+                result = install(package, codex_home, dry_run=dry_run)
+            except (OSError, ValueError) as exc:
+                completed = [item['id'] for item in results if item['status'] == 'FILES_INSTALLED']
+                if completed:
+                    raise ValueError(f'{exc}；本次已安装：{", ".join(completed)}。修复原因后可重新运行，已安装角色不会被覆盖。') from exc
+                raise
             results.append({'id': pet['id'], 'status': result['status']})
         return results
 

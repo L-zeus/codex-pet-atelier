@@ -22,6 +22,8 @@ python3 scripts/quota_bubble.py install --codex-cli "/absolute/path/to/codex"
 
 安装时存在的 `CODEX_HOME` 会保存在本机配置中。该配置只包含路径，不包含登录凭据。查询结果只在进程内存中处理，不生成额度 JSON。源码在本机编译并使用临时签名封装；项目没有发布经过 Apple 公证的预编译 App，遇到系统信任提示时应按 macOS 正常流程处理，不关闭系统安全保护。
 
+更新时用新版源码重复 `install`，再运行 `verify`；没有重新指定时会保留之前可用的 CLI 和 `CODEX_HOME`。如果新版本验证失败，安装器会尝试恢复旧版本，并提示保留的候选目录；若自动恢复失败，请保留提示中的路径以便人工检查。
+
 ## 配置全局快捷键
 
 1. 打开 macOS「快捷指令」，新建名为 `Codex Quota` 的快捷指令。
@@ -33,7 +35,8 @@ python3 scripts/quota_bubble.py install --codex-cli "/absolute/path/to/codex"
 
 3. 如果系统提示脚本操作已停用，请自行决定是否在「快捷指令 → 设置 → 高级」启用「允许运行脚本」。此设置也影响其他脚本操作；仅运行你信任的脚本。
 4. 在快捷指令详情中选择「添加键盘快捷键」，按 `⌃⌥⌘U`。若与其他应用冲突，可自行选择其他组合。
-5. 分别在 Finder、浏览器和 Codex 前台按组合键，确认显示真实额度。不要将从终端启动等同于全局快捷键验收。
+5. 分别在 Finder、浏览器和 Codex 前台按组合键，确认气泡先显示查询中，再显示真实额度。再次按同一组合键应关闭，下一次按键应重新查询；不要将从终端启动等同于全局快捷键验收。
+6. 在 Codex 中再次打开气泡，点击气泡内空白处后按 Esc，确认气泡关闭并能继续编辑；也检查关闭按钮和重试按钮。无需记录或分享额度数字。
 
 [Apple：在 Mac 工作时运行快捷指令](https://support.apple.com/guide/shortcuts-mac/apd163eb9f95/mac) · [Apple：脚本安全设置](https://support.apple.com/guide/shortcuts-mac/advanced-shortcuts-settings-apdfeb05586f/mac)
 

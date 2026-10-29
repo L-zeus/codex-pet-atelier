@@ -74,6 +74,40 @@ class ReleaseInstallTests(unittest.TestCase):
                 self.assertEqual(result, [{'id': 'first', 'status': 'ALREADY_INSTALLED'}])
                 installer.assert_not_called()
 
+    def test_partial_failure_reports_completed_pet_and_can_be_retried(self):
+        pets = [
+            {'id': 'first', 'manifestSha256': 'a', 'spriteSha256': 'b'},
+            {'id': 'second', 'manifestSha256': 'c', 'spriteSha256': 'd'},
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory).resolve() / 'codex'
+            failed = False
+
+            def fake_install(package, codex_home, dry_run=False):
+                nonlocal failed
+                if dry_run:
+                    return {'status': 'DRY_RUN'}
+                if package.name == 'second' and not failed:
+                    failed = True
+                    raise OSError('synthetic disk error')
+                target = home / 'pets' / package.name
+                target.mkdir(parents=True)
+                (target / 'marker').write_text('preserve')
+                return {'status': 'FILES_INSTALLED'}
+
+            def existing(path):
+                return {'ok': True, 'manifest_sha256': 'a', 'spritesheet_sha256': 'b'}
+
+            with mock.patch.object(install_release_pet, 'prepare', side_effect=lambda p, t, r: t / p['id']), \
+                 mock.patch.object(install_release_pet, 'validate', side_effect=existing), \
+                 mock.patch.object(install_release_pet, 'install', side_effect=fake_install):
+                with self.assertRaisesRegex(ValueError, 'first.*重新运行'):
+                    install_release_pet.install_selected(pets, codex_home=str(home))
+                self.assertEqual((home / 'pets/first/marker').read_text(), 'preserve')
+                result = install_release_pet.install_selected(pets, codex_home=str(home))
+                self.assertEqual(result, [{'id': 'first', 'status': 'ALREADY_INSTALLED'},
+                                          {'id': 'second', 'status': 'FILES_INSTALLED'}])
+
 
 if __name__ == '__main__':
     unittest.main()

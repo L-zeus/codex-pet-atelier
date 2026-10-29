@@ -2,6 +2,16 @@
 
 V1.7 使用 `blue-whale-maid-v17`、`orange-scholar-v17`、`silver-dragon-v17` 独立 ID。角色 ZIP 和校验和见 [README](../README.md)；用户报告客户端基础显示和移动通过，未自然触发的状态为 NOT_RUN。下文关于 renewal 私有候选和 code-only 包的说明是 V1.5 历史记录。
 
+## 普通安装、更新与卸载
+
+按 [README 的安装步骤](../README.md#安装原生宠物)取得 V2.0 或更新的工具包，创建虚拟环境并安装依赖。`install_release_pet.py --all` 读取固定 V1.7 HTTPS 资源和工具包内的角色清单，验证 SHA-256 后安装；`--dry-run` 不写入宠物目录。只安装一位时，把 `--all` 换成该角色 ID。已安装且哈希一致时跳过；同名内容不同时拒绝覆盖。网络不可用时，可用 `--release-dir PATH` 指向已下载的三个 V1.7 ZIP 目录，工具会验证 ZIP 和图集哈希。
+
+安装到 `${CODEX_HOME:-$HOME/.codex}/pets/`；Windows 默认位置为 `%USERPROFILE%\.codex\pets\`。安装成功后在 Codex 的 Pets 设置中刷新并选择角色。如果中途失败，按提示处理错误并重新运行：已安装的相同角色会跳过。需要替换不同的同名目录时，先自行备份并核对；此备用工具不会替换它。
+
+更新工具时下载并校验新版工具包；角色图集未变时无需重新安装。更新额度气泡时，在新版工具目录运行 `python3 scripts/quota_bubble.py install`，再运行 `python3 scripts/quota_bubble.py verify`；安装器只更新其自身目录，保留已有 Codex 路径配置。卸载气泡用 `python3 scripts/quota_bubble.py uninstall`，之后可自行在「快捷指令」删除 `Codex Quota`。卸载单个角色时，先在 Codex 中切换到其他宠物，再备份并移除上述 `pets` 目录中对应的单个角色文件夹；不要删除整个 `pets` 目录。
+
+以下为制作、校验和历史候选的详细说明，不是普通用户安装所必需。
+
 这些步骤适用于已经生成并通过视觉 QA 的本地角色包。若报告为 `ART_PENDING` 或 `QA_FAILED`，先完成制作或修复；不要把缺失的图集替换成测试夹具。素材权利未确认时，候选包与预览保存在 `workruns/`，不放入公开仓库。
 
 ## 本轮候选与原有宠物并存

@@ -121,16 +121,21 @@ def install(root, cli=None, dry_run=False):
     if sys.platform != 'darwin':
         raise ValueError('原生气泡仅支持 macOS；其他平台可使用现有额度命令。')
     root = safe_path(root)
+    previous_config = {}
+    if root.exists():
+        verify(root, require_runtime=False)
+        previous_config = json.loads((root / 'config.json').read_text(encoding='utf-8'))
     swiftc = shutil.which('swiftc')
     if not swiftc:
         raise ValueError('未找到 Swift 编译器；请按 Apple 提示安装 Xcode Command Line Tools。')
     python = Path(sys.executable).resolve()
-    codex_cli = Path(cli).expanduser().resolve() if cli else (
-        Path(found).resolve() if (found := shutil.which('codex')) else None)
+    saved_cli = previous_config.get('codexCLI')
+    saved_cli_usable = saved_cli and Path(saved_cli).is_file() and os.access(saved_cli, os.X_OK)
+    found = saved_cli if saved_cli_usable else (shutil.which('codex') or saved_cli)
+    codex_cli = Path(cli or found).expanduser().resolve() if cli or found else None
     if codex_cli and (not codex_cli.is_file() or not os.access(codex_cli, os.X_OK)):
         raise ValueError('指定的 Codex CLI 不存在或不可执行。')
-    if root.exists():
-        verify(root, require_runtime=False)
+    codex_home = os.environ.get('CODEX_HOME', previous_config.get('codexHome'))
     if dry_run:
         return {'status': 'DRY_RUN', 'swift_available': True,
                 'codex_cli_found': bool(codex_cli), 'launcher': str(root / 'show-quota-bubble')}
@@ -139,23 +144,46 @@ def install(root, cli=None, dry_run=False):
     stage = temp_root / 'QuotaBubble'
     backup = root.parent / ('.quota-bubble-backup-' + uuid.uuid4().hex)
     moved = False
+    published = False
     try:
-        build(stage, python, codex_cli, os.environ.get('CODEX_HOME'), swiftc)
+        build(stage, python, codex_cli, codex_home, swiftc)
         if root.exists():
+            verify(root, require_runtime=False)
             root.rename(backup)
             moved = True
         stage.rename(root)
+        published = True
         result = verify(root)
-        if moved:
-            shutil.rmtree(backup)
-        result['status'] = 'INSTALLED'
-        return result
-    except BaseException:
-        if moved and backup.exists() and not root.exists():
-            backup.rename(root)
+    except BaseException as exc:
+        failed = None
+        try:
+            if published and (root.exists() or root.is_symlink()):
+                failed = root.parent / ('.quota-bubble-failed-' + uuid.uuid4().hex)
+                root.rename(failed)  # Preserve even unexpected files for inspection.
+            if moved and backup.exists():
+                if root.exists() or root.is_symlink():
+                    raise OSError('安装目录已被其他文件占用')
+                backup.rename(root)
+        except OSError as recovery:
+            raise ValueError(f'安装失败：{exc}；自动恢复未完成：{recovery}。旧版本保留在 {backup}。') from exc
+        if failed:
+            restored = '旧版本已恢复；' if moved else ''
+            raise ValueError(f'安装失败：{exc}；{restored}未通过验证的候选保留在 {failed}。') from exc
         raise
     finally:
         shutil.rmtree(temp_root)
+    if moved:
+        try:
+            verify(backup, require_runtime=False)
+        except (OSError, ValueError, json.JSONDecodeError):
+            result['warning'] = f'旧版本目录包含变动，已保留以供检查：{backup}'
+        else:
+            try:
+                shutil.rmtree(backup)
+            except OSError:
+                result['warning'] = f'旧文件清理未完成，请检查：{backup}'
+    result['status'] = 'INSTALLED'
+    return result
 
 
 def uninstall(root):
