@@ -43,6 +43,8 @@ def unpack_package(data, pet, directory):
         sprite = archive.read(pet['id'] + '/spritesheet.webp')
     if sha(sprite) != pet['spriteSha256']:
         raise ValueError('spritesheet SHA-256 mismatch: ' + pet['id'])
+    if sha(manifest_bytes) != pet['manifestSha256']:
+        raise ValueError('manifest SHA-256 mismatch: ' + pet['id'])
     manifest = json.loads(manifest_bytes)
     if (not isinstance(manifest, dict) or manifest.get('id') != pet['id']
             or manifest.get('spritesheetPath') != 'spritesheet.webp'):
@@ -63,6 +65,19 @@ def deep_link(manifest, image_url):
     return 'codex://pets/install?' + urlencode(values, quote_via=quote)
 
 
+def load_catalog():
+    catalog = json.loads(CATALOG.read_text(encoding='utf-8'))
+    if (catalog['version'] != 'v1.7.0'
+            or catalog['releaseBase'] != REPO + '/releases/download/v1.7.0/'
+            or len(catalog['pets']) != 3 or {p['id'] for p in catalog['pets']} != PET_IDS):
+        raise ValueError('unexpected release version or role mapping')
+    for pet in catalog['pets']:
+        if (pet['zip'] != pet['id'] + '-v1.7.0.zip'
+                or not all(re.fullmatch(r'[0-9a-f]{64}', pet[field]) for field in ('zipSha256', 'spriteSha256', 'manifestSha256'))):
+            raise ValueError('invalid pinned release metadata')
+    return catalog
+
+
 def document(title, content, prefix):
     e = html.escape
     return f'''<!doctype html>
@@ -80,15 +95,7 @@ def build(output, release_dir=None, base_url=BASE):
     if parsed.scheme != 'https' or not parsed.netloc or parsed.query or parsed.fragment or parsed.username:
         raise ValueError('base URL must be an absolute HTTPS directory')
     base_url = base_url.rstrip('/') + '/'
-    catalog = json.loads(CATALOG.read_text(encoding='utf-8'))
-    if (catalog['version'] != 'v1.7.0'
-            or catalog['releaseBase'] != REPO + '/releases/download/v1.7.0/'
-            or len(catalog['pets']) != 3 or {p['id'] for p in catalog['pets']} != PET_IDS):
-        raise ValueError('unexpected release version or role mapping')
-    for pet in catalog['pets']:
-        if (pet['zip'] != pet['id'] + '-v1.7.0.zip'
-                or not all(re.fullmatch(r'[0-9a-f]{64}', pet[field]) for field in ('zipSha256', 'spriteSha256'))):
-            raise ValueError('invalid pinned release metadata')
+    catalog = load_catalog()
     output = Path(output).absolute()
     if output.exists() or output.is_symlink():
         raise ValueError('output already exists; refusing to overwrite')
@@ -107,10 +114,14 @@ def build(output, release_dir=None, base_url=BASE):
                 with urlopen(request, timeout=45) as response:
                     data = response.read(6 * 1024 * 1024)
             manifest, sprite = unpack_package(data, pet, temp)
+            original_manifest = (temp / pet['id'] / 'pet.json').read_bytes()
+            if (ROOT / 'site/manifests/v1.7.0' / pet['id'] / 'pet.json').read_bytes() != original_manifest:
+                raise ValueError('checked-in manifest differs from the V1.7 release')
             asset_path = f"assets/v1.7.0/{pet['id']}/spritesheet.webp"
             destination = site / asset_path
             destination.parent.mkdir(parents=True)
             destination.write_bytes(sprite)
+            (destination.parent / 'pet.json').write_bytes(original_manifest)
             records.append({'pet': pet, 'manifest': manifest, 'asset': asset_path,
                             'uri': deep_link(manifest, base_url + asset_path)})
         e = html.escape
@@ -132,6 +143,8 @@ aria-label="{e(manifest['displayName'], quote=True)} 的待机图" style="backgr
 <div><p class="eyebrow">V1.7 · CODEX NATIVE PET</p><h1>{e(manifest['displayName'])}</h1>
 <p class="details">{e(manifest['description'])}</p><p><a class="button" href="{e(record['uri'], quote=True)}">Open in Codex ↗</a></p>
 <p class="details">点击后允许浏览器打开 Codex，并在官方界面完成安装。应用中的名称及目录由客户端决定。</p>
+<p><a class="button secondary" href="{zip_url}">下载 ZIP 备用安装</a></p>
+<p class="details">如果 Codex 打开后没有安装窗口，可能是该客户端尚未启用安装入口。可下载 ZIP，或按 <a href="{REPO}#校验和安装">README</a> 配置 Python 环境后，在项目目录执行 <code>.venv/bin/python scripts/install_release_pet.py {pet['id']}</code>（Windows 使用 <code>.venv/Scripts/python.exe</code>），再刷新宠物列表。</p>
 <details><summary>无法打开？手动安装</summary><ol><li>下载<a href="{zip_url}">此角色的 V1.7 ZIP</a>，并对照 <a href="{catalog['releaseBase']}V1_7_SHA256SUMS.txt">SHA-256</a> 校验。</li>
 <li>解压后将角色文件夹放入 Codex 的 pets 目录；已有同名目录请先备份。</li>
 <li>在 Codex 设置中刷新并选择。<a href="{REPO}/blob/main/docs/INSTALLATION.md">详细说明</a></li></ol></details></div></div>'''

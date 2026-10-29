@@ -49,3 +49,21 @@ jobs:
           PY
       - name: State acceptance scope
         run: echo 'CODE_ONLY_CHECKS; artwork, native GUI, rights and public release are not verified by CI.'
+  macos-bubble-build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test installer and process cleanup with synthetic data
+        run: python -m unittest discover -s tests -p test_quota_bubble.py -v
+      - name: Compile and verify an isolated native app
+        run: |
+          python scripts/quota_bubble.py install --install-dir "$RUNNER_TEMP/QuotaBubble" --codex-cli /usr/bin/true
+          python scripts/quota_bubble.py verify --install-dir "$RUNNER_TEMP/QuotaBubble"
+          python scripts/quota_bubble.py uninstall --install-dir "$RUNNER_TEMP/QuotaBubble"
+      - name: State acceptance scope
+        run: echo 'Compile and synthetic tests only; native GUI and global hotkey require manual verification.'

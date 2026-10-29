@@ -34,8 +34,11 @@ def bundle(manifest=None, sprite=b'RIFFfakeWEBP', extra=None, symlink=False):
 
 class InstallSiteTests(unittest.TestCase):
     def metadata(self, data, sprite=b'RIFFfakeWEBP'):
+        with ZipFile(io.BytesIO(data)) as archive:
+            manifest = archive.read('blue-whale-maid-v17/pet.json')
         return {'id': 'blue-whale-maid-v17', 'zipSha256': hashlib.sha256(data).hexdigest(),
-                'spriteSha256': hashlib.sha256(sprite).hexdigest()}
+                'spriteSha256': hashlib.sha256(sprite).hexdigest(),
+                'manifestSha256': hashlib.sha256(manifest).hexdigest()}
 
     def test_uri_has_official_fields_and_correct_encoding(self):
         manifest = {'displayName': '鲸鱼 Maid', 'description': '测试 & 伙伴'}
@@ -57,6 +60,7 @@ class InstallSiteTests(unittest.TestCase):
             (bundle(symlink=True), {}, 'unsafe'),
             (bundle(manifest={'id': 'wrong', 'spritesheetPath': 'spritesheet.webp'}), {}, 'manifest'),
             (bundle(), {'spriteSha256': '0' * 64}, 'spritesheet SHA-256'),
+            (bundle(), {'manifestSha256': '0' * 64}, 'manifest SHA-256'),
         ]
         for data, override, error in cases:
             with self.subTest(error=error), tempfile.TemporaryDirectory() as directory:
