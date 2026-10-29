@@ -2,6 +2,7 @@
 """Read ChatGPT Codex rate limits once via the local official app-server."""
 import argparse
 from datetime import datetime, timezone
+import html
 import json
 import math
 import os
@@ -13,6 +14,8 @@ import sys
 import tempfile
 import threading
 import time
+import uuid
+import webbrowser
 
 SOURCE = 'Codex App Server account/rateLimits/read'
 USAGE_URL = 'https://chatgpt.com/codex/settings/usage'
@@ -75,14 +78,17 @@ def normalize(result):
                 safe_credits = None
         ident = bucket.get('limitId') or key
         name = bucket.get('limitName')
+        reached = bucket.get('rateLimitReachedType')
         buckets.append({'id': str(ident)[:128], 'name': name[:128] if isinstance(name, str) else None,
-                        'windows': windows, 'credits': safe_credits})
+                        'windows': windows, 'credits': safe_credits,
+                        'rateLimitReachedType': reached[:128] if isinstance(reached, str) else None})
     resets = result.get('rateLimitResetCredits')
     count = resets.get('availableCount') if isinstance(resets, dict) else None
     count = count if isinstance(count, int) and not isinstance(count, bool) and count >= 0 else None
     return {'status': 'ok' if any(b['windows'] for b in buckets) else 'unavailable',
             'fetchedAt': now(), 'source': SOURCE, 'buckets': buckets,
             'resetCreditsAvailable': count,
+            'ordinaryUsageAllowed': result.get('ordinaryUsageAllowed') if isinstance(result.get('ordinaryUsageAllowed'), bool) else None,
             'message': None if any(b['windows'] for b in buckets) else '账户未返回额度窗口。'}
 
 
@@ -253,6 +259,89 @@ def display_time(stamp):
         return '未提供'
 
 
+def window_label(minutes):
+    if minutes == 300:
+        return '5 小时'
+    if minutes == 10080:
+        return '每周'
+    return f'{minutes:g} 分钟' if minutes is not None else '窗口时长未提供'
+
+
+def render_html(snapshot):
+    """A self-contained static snapshot; untrusted values are text, never markup."""
+    esc = lambda value: html.escape(str(value), quote=True)
+    fetched = snapshot.get('fetchedAt')
+    try:
+        fetched_time = datetime.fromisoformat(fetched.replace('Z', '+00:00'))
+        if fetched_time.tzinfo is None:
+            raise ValueError('timestamp lacks timezone')
+        local_time = fetched_time.astimezone().strftime('%Y-%m-%d %H:%M:%S %Z %z')
+        stale = (datetime.now(timezone.utc) - fetched_time).total_seconds() > 3600
+    except (AttributeError, ValueError, OverflowError):
+        local_time, stale = '未提供', True
+    windows = [w for b in snapshot.get('buckets', []) for w in b.get('windows', [])]
+    stale = stale or any(w.get('resetsAt') is not None and w['resetsAt'] <= time.time() for w in windows)
+    state = '已过期，请重新运行命令' if stale else '生成时为最新读取'
+    permission = snapshot.get('ordinaryUsageAllowed')
+    permission_text = {True: '允许正常使用', False: '不允许正常使用', None: '正常使用许可状态未提供'}[permission]
+    sections = []
+    for bucket in snapshot.get('buckets', []):
+        title = bucket.get('name') or bucket.get('id') or '未命名额度桶'
+        bucket_id = bucket.get('id') or '未提供'
+        parts = [f'<section><h2>{esc(title)}</h2><p class="muted">额度桶：{esc(bucket_id)}</p>']
+        if bucket.get('rateLimitReachedType'):
+            parts.append(f'<p>服务端限制状态：{esc(bucket["rateLimitReachedType"])}</p>')
+        for window in bucket.get('windows', []):
+            used, remaining = window.get('usedPercent'), window.get('remainingPercent')
+            used_text = f'{used:g}%' if number(used) else '未提供'
+            remaining_text = f'{remaining:g}%' if number(remaining) else '未提供'
+            bar = f'<progress max="100" value="{remaining:g}">{remaining_text}</progress>' if number(remaining) else ''
+            parts.append(f'<div class="window"><div class="row"><strong>{esc(window_label(window.get("durationMins")))}</strong>'
+                         f'<strong>剩余 {esc(remaining_text)}</strong></div>{bar}'
+                         f'<p>已使用 {esc(used_text)} · 重置 {esc(display_time(window.get("resetsAt")))}</p></div>')
+        credits = bucket.get('credits')
+        if credits:
+            parts.append('<p class="muted">额外积分：' + esc(json.dumps(credits, ensure_ascii=False)) + '</p>')
+        sections.append(''.join(parts) + '</section>')
+    count = snapshot.get('resetCreditsAvailable')
+    reset_info = f'<p>可用额度重置次数：{esc(count)}</p>' if count is not None else ''
+    message = f'<p class="notice">{esc(snapshot["message"])}</p>' if snapshot.get('message') else ''
+    return f'''<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Codex Usage</title><style>
+:root{{color-scheme:light; font-family:system-ui,-apple-system,sans-serif; color:#29263c; background:#f5f3f8}}
+body{{margin:0; padding:clamp(18px,5vw,60px)}}main{{max-width:640px; margin:auto; background:#fff; border:1px solid #e7e3ed; border-radius:20px; padding:clamp(22px,5vw,40px); box-shadow:0 15px 45px #3a2d4410}}
+h1{{margin:0 0 8px;font-size:2rem}}h2{{font-size:1.1rem;margin:0}}p{{line-height:1.55}}section{{border-top:1px solid #ebe8ef;padding:22px 0 0;margin-top:22px}}
+.muted,small{{color:#6e697b}}.row{{display:flex;justify-content:space-between;gap:16px}}.window{{margin-top:20px}}.window p{{margin:6px 0;color:#6e697b;font-size:.92rem}}
+progress{{display:block;width:100%;height:12px;margin-top:10px;accent-color:#8876a7}}.notice{{padding:12px;background:#f7f1e9;border-radius:8px}}a{{color:#594777}}code{{overflow-wrap:anywhere}}
+</style></head><body><main><h1>Codex Usage</h1><p class="muted">本机私有快照 · {esc(state)}</p>
+<p>{esc(permission_text)}。剩余比例不代表可发送的消息数，也不保证可继续使用。</p>{message}
+{''.join(sections)}{reset_info}<section><p>更新时间：{esc(local_time)}<br>数据来源：{esc(snapshot.get('source', SOURCE))}</p>
+<p class="muted">此页面不会自动刷新；超过一小时或窗口重置后，请重新运行 <code>python3 scripts/codex_usage.py --open</code>。</p>
+<p><a href="{USAGE_URL}">官方用量详情</a></p><small>仅保存在本机，请勿分享包含个人额度的页面。</small></section></main></body></html>'''
+
+
+def write_usage_page(snapshot):
+    directory = ROOT / 'workruns' / 'codex-usage-pages'
+    for part in (directory, *directory.parents):
+        if part.is_symlink():
+            raise ValueError('私有页面路径不能包含符号链接。')
+    directory.mkdir(mode=0o700, parents=True, exist_ok=True)
+    if os.name != 'nt':
+        os.chmod(directory, 0o700)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=directory,
+                                         prefix='.usage-', delete=False) as stream:
+            temporary = Path(stream.name)
+            stream.write(render_html(snapshot))
+        target = directory / f'usage-{uuid.uuid4().hex}.html'
+        os.replace(temporary, target)
+        return target
+    finally:
+        if temporary:
+            temporary.unlink(missing_ok=True)
 def display(snapshot):
     print('Codex Usage — ' + snapshot['status'])
     print('来源：' + SOURCE)
@@ -279,6 +368,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--json', action='store_true', help='输出筛选后的 JSON 快照')
     parser.add_argument('--output', help='将本地快照写入 workruns/ 下')
+    parser.add_argument('--open', action='store_true', help='查询一次并在浏览器打开本机私有页面')
     parser.add_argument('--timeout', type=float, default=15, help='总超时时间（秒）')
     args = parser.parse_args(argv)
     if not math.isfinite(args.timeout) or not 0 < args.timeout <= 120:
@@ -294,9 +384,20 @@ def main(argv=None):
         except (ValueError, OSError) as exc:
             print(f'无法保存快照：{exc}', file=sys.stderr)
             return 2
+    if args.open:
+        try:
+            page = write_usage_page(snapshot)
+            opened = webbrowser.open(page.as_uri(), new=2)
+        except (ValueError, OSError, webbrowser.Error) as exc:
+            print('无法生成或打开本地额度页面，请检查本机文件和浏览器权限。', file=sys.stderr)
+            return 2
+        if not opened:
+            print('已生成本地额度页面，但浏览器未能打开；请检查默认浏览器设置。', file=sys.stderr)
+            return 2
+        print('已请求浏览器打开本机私有额度页面。')
     if args.json:
         print(json.dumps(snapshot, ensure_ascii=False, indent=2))
-    else:
+    elif not args.open:
         display(snapshot)
     return 0 if snapshot['status'] == 'ok' else 1
 

@@ -124,5 +124,57 @@ if account is not None:
                 self.assertNotIn('private-detail', str(cm.exception))
 
 
+class HtmlPageTests(unittest.TestCase):
+    def test_permission_multi_bucket_html_escape_and_stale(self):
+        value = codex_usage.normalize({
+            'ordinaryUsageAllowed': False,
+            'rateLimitsByLimitId': {
+                'codex': {'limitName': '<script>alert(1)</script>', 'rateLimitReachedType': 'rateLimitReached',
+                          'primary': {'usedPercent': 25, 'windowDurationMins': 300, 'resetsAt': 2000000000},
+                          'secondary': {'usedPercent': 60, 'windowDurationMins': 10080, 'resetsAt': 2000000000}},
+                'other': {'primary': {'usedPercent': 5, 'windowDurationMins': 45, 'resetsAt': None}}}})
+        page = codex_usage.render_html(value)
+        self.assertIn('不允许正常使用', page)
+        self.assertIn('&lt;script&gt;alert(1)&lt;/script&gt;', page)
+        self.assertNotIn('<script>', page)
+        self.assertIn('剩余 75%', page)
+        self.assertIn('已使用 25%', page)
+        self.assertIn('5 小时', page)
+        self.assertIn('每周', page)
+        self.assertIn('45 分钟', page)
+        self.assertIn('Content-Security-Policy', page)
+        self.assertNotIn('<button', page)
+        value['ordinaryUsageAllowed'] = None
+        value['fetchedAt'] = '2020-01-01T00:00:00+00:00'
+        page = codex_usage.render_html(value)
+        self.assertIn('正常使用许可状态未提供', page)
+        self.assertIn('已过期', page)
+
+    def test_open_queries_once_and_writes_private_page(self):
+        with tempfile.TemporaryDirectory() as directory, mock.patch.object(codex_usage, 'ROOT', Path(directory).resolve()):
+            result = codex_usage.normalize({'rateLimits': {'primary': {'usedPercent': 50, 'windowDurationMins': 300}}})
+            with mock.patch.object(codex_usage, 'fetch_usage', return_value=result) as fetch, \
+                 mock.patch.object(codex_usage.webbrowser, 'open', return_value=True) as browser, \
+                 mock.patch('builtins.print'):
+                self.assertEqual(codex_usage.main(['--open']), 0)
+                fetch.assert_called_once()
+                browser.assert_called_once()
+            pages = list((Path(directory) / 'workruns/codex-usage-pages').glob('*.html'))
+            self.assertEqual(len(pages), 1)
+            self.assertIn('剩余 50%', pages[0].read_text())
+            if os.name != 'nt':
+                self.assertEqual(stat.S_IMODE(pages[0].stat().st_mode), 0o600)
+                self.assertEqual(stat.S_IMODE(pages[0].parent.stat().st_mode), 0o700)
+
+    def test_open_error_is_new_page_not_stale_success(self):
+        with tempfile.TemporaryDirectory() as directory, mock.patch.object(codex_usage, 'ROOT', Path(directory).resolve()), \
+             mock.patch.object(codex_usage, 'fetch_usage', side_effect=codex_usage.UsageError('auth_required', '未登录')), \
+             mock.patch.object(codex_usage.webbrowser, 'open', return_value=True), mock.patch('builtins.print'):
+            self.assertEqual(codex_usage.main(['--open']), 1)
+            page = next((Path(directory) / 'workruns/codex-usage-pages').glob('*.html')).read_text()
+            self.assertIn('未登录', page)
+            self.assertNotIn('剩余 50%', page)
+
+
 if __name__ == '__main__':
     unittest.main()

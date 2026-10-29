@@ -37,7 +37,7 @@ class CodePackageTests(unittest.TestCase):
             self.assertEqual(manifest['license_status'], 'MIT_CODE_AND_DOCS')
             self.assertEqual(manifest['publication_status'], 'LOCAL_BUILD_NOT_PUBLISHED')
             notice = archive.read(f'{PREFIX}/CODE_ONLY_NOTICE.txt')
-            self.assertIn(b'Artwork rights: UNVERIFIED', notice)
+            self.assertIn(b'Artwork is not included', notice)
             self.assertIn(f'{PREFIX}/LICENSE', archive.namelist())
             self.assertIn(f'{PREFIX}/ASSET_LICENSE.md', archive.namelist())
         with self.assertRaisesRegex(ValueError, 'overwrite refused'):

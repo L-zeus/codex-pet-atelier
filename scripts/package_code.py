@@ -12,10 +12,10 @@ from zipfile import BadZipFile, ZipFile, ZipInfo, ZIP_DEFLATED
 from audit_publication import LIMIT, inspect
 from petlib import digest, reject_symlink_chain
 
-PREFIX = 'codex-pet-atelier-code-1.5.0'
+PREFIX = 'codex-pet-atelier-code-1.9.0'
 # Explicit file names only. New files require a reviewed change to this list.
 FILES = (
-    '.github/workflows/validate.yml', '.gitignore', 'AGENTS.md', 'CHANGELOG.md',
+    '.github/workflows/validate.yml', '.github/workflows/pages.yml', '.gitignore', 'AGENTS.md', 'CHANGELOG.md',
     'CODEX_PROMPT.md', 'README.md', 'START_HERE.md', 'LICENSE', 'ASSET_LICENSE.md', 'CREDITS.md',
     'characters/blue-whale-maid.md', 'characters/orange-scholar.md', 'characters/silver-dragon.md',
     'docs/ASSET_RIGHTS.md', 'docs/CHARACTER_SPECS.md', 'docs/CODE_ONLY_RELEASE.md',
@@ -26,14 +26,15 @@ FILES = (
     'scripts/clean_chroma.py', 'scripts/extract_companion_frames.py', 'scripts/install_pet.py',
     'scripts/package_code.py', 'scripts/package_local.py', 'scripts/package_release.py', 'scripts/petlib.py',
     'scripts/preview_pet.py', 'scripts/validate_pet.py', 'scripts/codex_usage.py',
-    'scripts/interactive_preview.py', 'tests/test_chroma.py', 'tests/test_codex_usage.py', 'tests/test_preview.js',
+    'scripts/interactive_preview.py', 'scripts/build_install_site.py', 'site/styles.css', 'site/releases-v1.7.0.json',
+    'tests/test_install_site.py', 'tests/test_chroma.py', 'tests/test_codex_usage.py', 'tests/test_preview.js',
     'tests/test_code_package.py', 'tests/test_companion.py', 'tests/test_publication.py',
     'tests/test_tools.py',
 )
 NOTICE = (b'CODE-ONLY TOOLKIT\n'
           b'Project code and documentation: MIT; see LICENSE and ASSET_LICENSE.md.\n'
           b'Local build status does not establish GitHub publication.\n'
-          b'Artwork rights: UNVERIFIED; no artwork redistribution permission is granted.\n'
+          b'Artwork is not included; V1.7 artwork licensing is described in ASSET_LICENSE.md.\n'
           b'No pet images, GIFs, screenshots, private references, reports or Git database are included.\n')
 METADATA = ('CODE_ONLY_NOTICE.txt', 'RC_MANIFEST.json', 'SHA256SUMS')
 

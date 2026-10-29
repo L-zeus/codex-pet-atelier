@@ -1,0 +1,9 @@
+{
+  "version": "v1.7.0",
+  "releaseBase": "https://github.com/L-zeus/codex-pet-atelier/releases/download/v1.7.0/",
+  "pets": [
+    {"id": "blue-whale-maid-v17", "zip": "blue-whale-maid-v17-v1.7.0.zip", "zipSha256": "db57ad0bda6f702d84824a3af9c2b823dfd080cd779fe155d261dd6c27ea284d", "spriteSha256": "e5767f2184374595586654db12347bcced0fcc43ca65bfb12756d7c37700a6e3"},
+    {"id": "orange-scholar-v17", "zip": "orange-scholar-v17-v1.7.0.zip", "zipSha256": "638ad4759edab7ed878be89404687284f1d18ab89730521b500b3a6ec473e904", "spriteSha256": "807aa90cbad1268ae8bdd32f093ff6b3701cb7aa02f9c2586296da9656dc7b51"},
+    {"id": "silver-dragon-v17", "zip": "silver-dragon-v17-v1.7.0.zip", "zipSha256": "ceef552f51008a44edfffb3fd019a5f438dd1147abf512d4297770cc4c54e73b", "spriteSha256": "c94dd9855e89d0cef752813ab2845b0e62168980f86a1a17f14a8fc1dd687b1d"}
+  ]
+}

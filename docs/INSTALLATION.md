@@ -78,4 +78,6 @@ Computer Use 已明确拒绝控制 `com.openai.codex`；不得改用其他 GUI �
 
 下载并解压 [V1.7 Release](https://github.com/L-zeus/codex-pet-atelier/releases/tag/v1.7.0) 中的三个角色 ZIP。macOS 默认将所需角色目录放到 `~/.codex/pets/`；Windows 默认放到 `%USERPROFILE%\.codex\pets\`。如设置 `CODEX_HOME`，使用该目录下的 `pets`。已有同名目录时先备份，不要覆盖。随后在应用 Settings → Pets 刷新并选择。官方 `codex://pets/install` 需要公开 HTTPS 图集直链；当前发行附件是 ZIP，因此本项目暂不提供一键安装链接。
 
-查看额度：`python3 scripts/codex_usage.py`，或用 `--output workruns/codex-usage.json` 写入仅本地的快照。Windows 使用 `py scripts\codex_usage.py`。打开 `preview/index.html`，选择三张解压包中的 `spritesheet.webp`；双击角色打开额度卡片，选择刚生成的快照文件。更新额度时重新执行命令，再通过卡片选择文件。右键角色或按“选择动作”可播放动作，Esc 关闭菜单；暂停、循环、重播、缩放和背景控件在预览页下方。预览页面与原生悬浮宠物是不同的运行界面。[能力边界](NATIVE_INTERACTION_LIMITS.md)
+直接查看额度：在项目目录运行 `python3 scripts/codex_usage.py --open`，一次查询后自动打开本机私有页面；刷新时重新运行命令。Windows 使用 `py scripts\codex_usage.py --open`。页面位于 Git 忽略的 `workruns/`，请勿分享。也可用 `--output workruns/codex-usage.json` 写入仅本地的快照，供动作预览页手动导入。
+
+打开 `preview/index.html`，选择三张解压包中的 `spritesheet.webp`；双击角色打开额度卡片，选择刚生成的 JSON 快照文件。更新额度时重新执行查询，再通过卡片选择文件。右键角色或按“选择动作”可播放动作，Esc 关闭菜单；暂停、循环、重播、缩放和背景控件在预览页下方。预览页面与原生悬浮宠物是不同的运行界面。[能力边界](NATIVE_INTERACTION_LIMITS.md)

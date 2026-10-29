@@ -49,12 +49,13 @@ unzip ~/Downloads/blue-whale-maid-v17-v1.7.0.zip -d workruns/downloaded-v17
 在项目根目录运行，使用本机已登录的 Codex CLI 一次性读取官方 App Server：
 
 ```bash
+python3 scripts/codex_usage.py --open          # 真实读取并打开本机私有额度页面
 python3 scripts/codex_usage.py                 # 命令行摘要
 python3 scripts/codex_usage.py --json          # 筛选后的 JSON
 python3 scripts/codex_usage.py --output workruns/codex-usage.json
 ```
 
-Windows 可将 `python3` 换成 `py`。快照只写在 Git 忽略的 `workruns/`，包含个人额度，请勿分享或提交。失败时程序会说明状态；也可以使用 [官方 Usage 页面](https://chatgpt.com/codex/settings/usage)或 Codex CLI 的 `/status`。工具不会自动轮询，也不直接读取或导出登录凭据。
+Windows 可将 `python3` 换成 `py`。`--open` 每次重新查询，在浏览器打开静态本地页面；要刷新请重新运行命令。页面与可选 JSON 快照只写在 Git 忽略的 `workruns/`，包含个人额度，请勿分享或提交。额度剩余比例不保证账户允许继续使用，许可状态以服务端返回为准。失败时程序会说明状态；也可以使用 [官方 Usage 页面](https://chatgpt.com/codex/settings/usage)或 Codex CLI 的 `/status`。工具不会自动轮询，也不直接读取或导出登录凭据。
 
 用浏览器打开 `preview/index.html`，分别选择三套已解压包的 `spritesheet.webp`。也可以先在项目根目录生成预先关联三个图集的本地页面：
 
