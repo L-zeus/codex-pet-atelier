@@ -48,7 +48,16 @@ unzip ~/Downloads/blue-whale-maid-v17-v1.7.0.zip -d workruns/downloaded-v17
 
 ## 查看额度与预览动作
 
-在项目根目录运行，使用本机已登录的 Codex CLI 一次性读取官方 App Server：
+macOS 的 V2.0 开发候选提供短时运行的原生额度气泡：
+
+```bash
+python3 scripts/quota_bubble.py install
+python3 scripts/quota_bubble.py verify
+```
+
+安装后按[快捷键配置指南](docs/MACOS_QUOTA_HOTKEY.md)在 macOS「快捷指令」中设置组合键（推荐 `⌃⌥⌘U`）。气泡使用官方 App Server，不需要浏览器或常驻监听程序，也不改变原生宠物交互。为保留正在编辑的输入焦点，先点击气泡再按 Esc 才能关闭；也可直接点击关闭按钮。全局快捷键需在自己的 Mac 上实际验收。
+
+Windows 和其他环境可继续使用以下命令。在项目根目录运行，使用本机已登录的 Codex CLI 一次性读取官方 App Server：
 
 ```bash
 python3 scripts/codex_usage.py --open          # 真实读取并打开本机私有额度页面

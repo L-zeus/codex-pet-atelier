@@ -125,6 +125,14 @@ if account is not None:
 
 
 class HtmlPageTests(unittest.TestCase):
+    def test_json_accepts_explicit_cli_without_opening_browser(self):
+        result = codex_usage.normalize({'rateLimits': {'primary': {'usedPercent': 50}}})
+        with mock.patch.object(codex_usage, 'fetch_usage', return_value=result) as fetch, \
+             mock.patch.object(codex_usage.webbrowser, 'open') as browser, mock.patch('builtins.print'):
+            self.assertEqual(codex_usage.main(['--json', '--codex-cli', '/example/codex']), 0)
+            fetch.assert_called_once_with(15, executable='/example/codex')
+            browser.assert_not_called()
+
     def test_permission_multi_bucket_html_escape_and_stale(self):
         value = codex_usage.normalize({
             'ordinaryUsageAllowed': False,

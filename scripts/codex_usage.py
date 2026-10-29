@@ -370,11 +370,12 @@ def main(argv=None):
     parser.add_argument('--output', help='将本地快照写入 workruns/ 下')
     parser.add_argument('--open', action='store_true', help='查询一次并在浏览器打开本机私有页面')
     parser.add_argument('--timeout', type=float, default=15, help='总超时时间（秒）')
+    parser.add_argument('--codex-cli', help='显式指定本机 Codex CLI 路径（供图形界面使用）')
     args = parser.parse_args(argv)
     if not math.isfinite(args.timeout) or not 0 < args.timeout <= 120:
         parser.error('--timeout 必须大于 0 且不超过 120 秒')
     try:
-        snapshot = fetch_usage(args.timeout)
+        snapshot = fetch_usage(args.timeout, executable=args.codex_cli)
     except UsageError as exc:
         snapshot = {'status': exc.status, 'fetchedAt': now(), 'source': SOURCE,
                     'buckets': [], 'resetCreditsAvailable': None, 'message': str(exc)}
