@@ -15,9 +15,16 @@
         <div class="stage-top"><span class="stage-label">MOTION STUDIO</span><div class="backgrounds" aria-label="预览背景"><button type="button" class="bg-button active" data-bg="light" aria-pressed="true">浅色</button><button type="button" class="bg-button" data-bg="dark" aria-pressed="false">深色</button></div></div>
         <div class="stage" id="stage" data-background="light">
           <p id="missing" class="missing">请先为角色选择图集</p>
-          <button type="button" id="pet" class="pet" aria-label="预览角色：双击查看额度，右键或按菜单键选择动作" aria-haspopup="menu"><canvas id="canvas" width="192" height="208"></canvas></button>
+          <button type="button" id="pet" class="pet" aria-label="预览角色：单击查看快捷键，双击查看额度，右键或按菜单键选择动作" aria-haspopup="menu"><canvas id="canvas" width="192" height="208"></canvas></button>
           <div id="action-menu" class="action-menu" role="menu" aria-label="预览动作" hidden></div>
         </div>
+        <aside id="shortcut-hint" class="shortcut-hint" aria-live="polite" hidden>
+          <button type="button" id="shortcut-close" aria-label="关闭快捷键提示">×</button>
+          <strong>查看额度的建议快捷键</strong>
+          <p>Mac：⌥Q　·　Windows：Ctrl+Alt+Q</p>
+          <small>需先自行配置，可更换；此点击提示仅在本地预览器中。</small>
+          <div><a href="../docs/MACOS_QUOTA_HOTKEY.md">Mac 设置</a> · <a href="../docs/WINDOWS_QUOTA_HOTKEY.md">Windows 设置</a></div>
+        </aside>
         <div class="stage-bottom"><div><span class="small-label">CURRENT MOTION</span><strong id="current-action">待机</strong></div><div class="motion-controls"><button type="button" id="play-toggle">暂停</button><button type="button" id="replay">从头播放</button><button type="button" id="idle">恢复待机</button></div></div>
         <div class="settings"><label><input type="checkbox" id="loop" checked> 循环播放</label><label for="scale">角色大小</label><input type="range" id="scale" min="70" max="160" value="120" aria-label="角色大小"></div>
       </section>

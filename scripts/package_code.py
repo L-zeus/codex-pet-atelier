@@ -12,7 +12,7 @@ from zipfile import BadZipFile, ZipFile, ZipInfo, ZIP_DEFLATED
 from audit_publication import LIMIT, inspect
 from petlib import digest, reject_symlink_chain
 
-PREFIX = 'codex-pet-atelier-code-2.0.0'
+PREFIX = 'codex-pet-atelier-code-2.1.0'
 # Explicit file names only. New files require a reviewed change to this list.
 FILES = (
     '.github/workflows/validate.yml', '.github/workflows/pages.yml', '.gitignore', 'AGENTS.md', 'CHANGELOG.md',
@@ -20,18 +20,18 @@ FILES = (
     'characters/blue-whale-maid.md', 'characters/orange-scholar.md', 'characters/silver-dragon.md',
     'docs/ASSET_RIGHTS.md', 'docs/CHARACTER_SPECS.md', 'docs/CODE_ONLY_RELEASE.md',
     'docs/CONTRIBUTING.md', 'docs/INSTALLATION.md', 'docs/MANUAL_GUI_CHECKLIST.md',
-    'docs/PRODUCTION.md', 'docs/PROJECT_PLAN.md', 'docs/NATIVE_INTERACTION_LIMITS.md', 'docs/MACOS_QUOTA_HOTKEY.md',
+    'docs/PRODUCTION.md', 'docs/PROJECT_PLAN.md', 'docs/NATIVE_INTERACTION_LIMITS.md', 'docs/MACOS_QUOTA_HOTKEY.md', 'docs/WINDOWS_QUOTA_HOTKEY.md',
     'macos/QuotaBubble/main.swift',
     'preview/index.html', 'preview/style.css', 'preview/app.js', 'pets/.gitkeep', 'references/README.md',
     'requirements.txt', 'scripts/audit_motion.py', 'scripts/audit_publication.py',
     'scripts/clean_chroma.py', 'scripts/extract_companion_frames.py', 'scripts/install_pet.py',
     'scripts/package_code.py', 'scripts/package_local.py', 'scripts/package_release.py', 'scripts/petlib.py',
     'scripts/preview_pet.py', 'scripts/validate_pet.py', 'scripts/codex_usage.py',
-    'scripts/interactive_preview.py', 'scripts/build_install_site.py', 'scripts/install_release_pet.py', 'scripts/quota_bubble.py', 'site/styles.css', 'site/releases-v1.7.0.json',
+    'scripts/interactive_preview.py', 'scripts/build_install_site.py', 'scripts/install_release_pet.py', 'scripts/quota_bubble.py', 'scripts/windows_quota.py', 'windows/quota_bubble.py', 'site/styles.css', 'site/releases-v1.7.0.json',
     'site/manifests/v1.7.0/blue-whale-maid-v17/pet.json', 'site/manifests/v1.7.0/orange-scholar-v17/pet.json',
     'site/manifests/v1.7.0/silver-dragon-v17/pet.json',
     'tests/test_install_site.py', 'tests/test_release_install.py', 'tests/test_quota_bubble.py', 'tests/test_chroma.py', 'tests/test_codex_usage.py', 'tests/test_preview.js',
-    'tests/test_code_package.py', 'tests/test_companion.py', 'tests/test_publication.py',
+    'tests/test_code_package.py', 'tests/test_companion.py', 'tests/test_publication.py', 'tests/test_windows_quota.py',
     'tests/test_tools.py',
 )
 NOTICE = (b'CODE-ONLY TOOLKIT\n'

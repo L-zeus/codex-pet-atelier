@@ -18,9 +18,9 @@ class Element {
   contains(target) { return target === this || this.children.some(c => c.contains(target)); }
   click() { this.clicked = true; }
 }
-const ids = ['canvas','pet','action-menu','usage-card','pet-tabs','pet-inputs','missing','current-action','play-toggle','loop','replay','idle','menu-open','scale','stage','usage-content','usage-open','usage-close','usage-import','usage-file','initial-pets'];
+const ids = ['canvas','pet','action-menu','usage-card','shortcut-hint','shortcut-close','pet-tabs','pet-inputs','missing','current-action','play-toggle','loop','replay','idle','menu-open','scale','stage','usage-content','usage-open','usage-close','usage-import','usage-file','initial-pets'];
 const els = Object.fromEntries(ids.map(id => [id,new Element()]));
-els['action-menu'].hidden = els['usage-card'].hidden = true;
+els['action-menu'].hidden = els['usage-card'].hidden = els['shortcut-hint'].hidden = true;
 els.loop.checked = true;
 els['initial-pets'].textContent = JSON.stringify([{src:'a.webp'},{src:'b.webp'},{src:'c.webp'}]);
 let draws = [];
@@ -62,7 +62,33 @@ function visibleText(node) { return node.textContent + node.children.map(visible
       assert.equal(lastDelay,timings[motion][0]);
     }
   }
+  await els.pet.emit('click',{detail:1});
+  const hintTask = [...callbacks.keys()].at(-1);
+  assert.equal(els['shortcut-hint'].hidden,true);
+  callbacks.get(hintTask)(); callbacks.delete(hintTask);
+  assert.equal(els['shortcut-hint'].hidden,false);
+  await document.emit('keydown',{key:'Escape'});
+  assert.equal(els['shortcut-hint'].hidden,true);
+  await els.pet.emit('click',{detail:1});
+  const cancelledByOutside = [...callbacks.keys()].at(-1);
+  await document.emit('pointerdown',{target:new Element()});
+  assert.equal(callbacks.has(cancelledByOutside),false);
+  await els.pet.emit('click',{detail:1});
+  const cancelledByEscape = [...callbacks.keys()].at(-1);
+  await document.emit('keydown',{key:'Escape'});
+  assert.equal(callbacks.has(cancelledByEscape),false);
+  await els.pet.emit('click',{detail:1});
+  const pendingHint = [...callbacks.keys()].at(-1);
+  await els.pet.emit('click',{detail:2});
+  await els.pet.emit('dblclick');
+  assert.equal(callbacks.has(pendingHint),false);
+  assert.equal(els['shortcut-hint'].hidden,true);
+  assert.equal(els['usage-card'].hidden,false);
+  await els['usage-close'].emit('click');
+  await els.pet.emit('click',{detail:0});
+  assert.equal(els['shortcut-hint'].hidden,false);
   await els.pet.emit('contextmenu',{clientX:799,clientY:599});
+  assert.equal(els['shortcut-hint'].hidden,true);
   assert.equal(els['action-menu'].hidden,false);
   assert.equal(els['action-menu'].style.left,'614px');
   assert.equal(els['action-menu'].style.top,'192px');

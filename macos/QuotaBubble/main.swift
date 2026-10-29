@@ -166,6 +166,9 @@ final class BubbleController: NSObject, NSApplicationDelegate, NSWindowDelegate 
     }
 
     private func endContent() {
+        label("建议快捷键：⌥Q（以快捷指令设置为准）", size: 11, color: .secondaryLabelColor, height: 22)
+        _ = button("如何设置", action: #selector(openShortcutHelp), x: side, buttonWidth: 100)
+        y += 34
         y += 10
         _ = button("查看官方 Usage", action: #selector(openUsage), x: side, buttonWidth: 135)
         _ = button("重试", action: #selector(retryQuery), x: 163, buttonWidth: 70)
@@ -319,6 +322,13 @@ final class BubbleController: NSObject, NSApplicationDelegate, NSWindowDelegate 
     }
     @objc private func openUsage() {
         if let url = URL(string: "https://chatgpt.com/codex/settings/usage") { NSWorkspace.shared.open(url) }
+    }
+    @objc private func openShortcutHelp() {
+        let help = NSAlert()
+        help.messageText = "设置额度快捷键"
+        help.informativeText = "打开「快捷指令」，在 Codex Quota 的详情中删除旧快捷键，再设置 ⌥Q。若与其他功能或输入法冲突，请选择其他组合。已安装的气泡无需因更换快捷键而重新编译。"
+        help.addButton(withTitle: "知道了")
+        help.runModal()
     }
     @objc private func closeBubble() { panel.close() }
     func windowWillClose(_ notification: Notification) {

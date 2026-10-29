@@ -15,6 +15,7 @@
   const $ = id => document.getElementById(id);
   const canvas = $('canvas'), ctx = canvas.getContext('2d'), pet = $('pet');
   const menu = $('action-menu'), usage = $('usage-card');
+  const shortcutHint = $('shortcut-hint');
   const configured = document.getElementById('initial-pets');
   let initial = [];
   if (configured) {
@@ -23,7 +24,22 @@
   const pets = labels.map((label, i) => ({label, image: null, url: null, initial: initial[i] || null}));
   let selected = 0, state = 0, frame = 0, playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
   let timer = null, began = 0, remaining = motions[0][2][0], menuTrigger = pet;
-  let snapshot = null;
+  let snapshot = null, hintTimer = null;
+
+  function closeHint() {
+    if (hintTimer !== null) clearTimeout(hintTimer);
+    hintTimer = null;
+    shortcutHint.hidden = true;
+  }
+  function showHint() { closeMenu(); shortcutHint.hidden = false; }
+  pet.addEventListener('click', event => {
+    if (!usage.hidden) return;
+    if (event.detail > 1) { closeHint(); return; }
+    if (event.detail === 0) { showHint(); return; }
+    closeHint();
+    hintTimer = setTimeout(() => { hintTimer = null; showHint(); }, 300);
+  });
+  $('shortcut-close').addEventListener('click', closeHint);
 
   function updateTabs() {
     $('pet-tabs').querySelectorAll('button').forEach((button, i) => {
@@ -100,6 +116,7 @@
     menu.append(button);
   });
   function openMenu(x, y, trigger) {
+    closeHint();
     menuTrigger = trigger; menu.hidden = false;
     const rect = menu.getBoundingClientRect();
     menu.style.left = `${Math.max(8, Math.min(x, innerWidth - rect.width - 8))}px`;
@@ -123,11 +140,15 @@
     if (event.key === 'End') next = buttons.length - 1;
     if (next !== null) { event.preventDefault(); buttons[next].focus(); }
   });
-  document.addEventListener('pointerdown', event => { if (!menu.hidden && !menu.contains(event.target) && event.target !== $('menu-open')) closeMenu(); });
+  document.addEventListener('pointerdown', event => {
+    if (!menu.hidden && !menu.contains(event.target) && event.target !== $('menu-open')) closeMenu();
+    if ((hintTimer !== null || !shortcutHint.hidden) && !shortcutHint.contains(event.target) && !pet.contains(event.target)) closeHint();
+  });
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') {
       if (!menu.hidden) closeMenu(true);
       else if (!usage.hidden) { usage.hidden = true; $('usage-open').focus(); }
+      else if (hintTimer !== null || !shortcutHint.hidden) { closeHint(); pet.focus(); }
     }
   });
   $('play-toggle').addEventListener('click', () => {
@@ -195,7 +216,7 @@
     if (snapshot.resetCreditsAvailable !== null && snapshot.resetCreditsAvailable !== undefined) content.append(text('p', `可用额度重置次数：${snapshot.resetCreditsAvailable}`, 'usage-extra'));
     content.append(text('p', `更新时间：${dateText(snapshot.fetchedAt)}\n来源：Codex App Server account/rateLimits/read`, 'usage-meta'));
   }
-  function openUsage() { closeMenu(); renderUsage(); usage.hidden = false; usage.focus(); }
+  function openUsage() { closeHint(); closeMenu(); renderUsage(); usage.hidden = false; usage.focus(); }
   pet.addEventListener('dblclick', openUsage);
   $('usage-open').addEventListener('click', openUsage);
   $('usage-close').addEventListener('click', () => { usage.hidden = true; $('usage-open').focus(); });

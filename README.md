@@ -2,9 +2,11 @@
 
 三套为 Codex 原生 Pets 制作的角色动画，以及校验、预览、安装和打包工具。项目由社区维护，**不是 OpenAI 官方产品**。
 
+额度气泡的建议快捷键：**Mac ⌥Q** · **Windows Ctrl+Alt+Q**。需要先分别[配置 Mac 快捷指令](docs/MACOS_QUOTA_HOTKEY.md)或[安装 Windows 快捷方式](docs/WINDOWS_QUOTA_HOTKEY.md)；按键可能与输入法或其他应用冲突，可自行更换。快捷键提示不属于原生宠物的点击功能。
+
 ## 安装原生宠物
 
-可以使用 V2.0 工具包安装三位角色，无需下载宠物 ZIP 或依赖网页跳转。先从[发行页面](https://github.com/L-zeus/codex-pet-atelier/releases)获取 V2.0 或更新版本的工具包并校验其 SHA-256；在当前开发候选阶段，也可检出 [PR #1](https://github.com/L-zeus/codex-pet-atelier/pull/1) 的源码。V1.9 工具包不包含以下备用安装器。
+可以使用 V2.0 或更新的工具包安装三位角色，无需下载宠物 ZIP 或依赖网页跳转。先从[发行页面](https://github.com/L-zeus/codex-pet-atelier/releases)获取工具包并校验其 SHA-256。V1.9 工具包不包含以下备用安装器。
 
 在解压后的工具目录中，macOS 或 Linux 运行：
 
@@ -63,16 +65,16 @@ unzip ~/Downloads/blue-whale-maid-v17-v1.7.0.zip -d workruns/downloaded-v17
 
 ## 查看额度与预览动作
 
-macOS 的 V2.0 开发候选提供短时运行的原生额度气泡：
+macOS 提供短时运行的原生额度气泡：
 
 ```bash
 python3 scripts/quota_bubble.py install
 python3 scripts/quota_bubble.py verify
 ```
 
-安装后按[快捷键配置指南](docs/MACOS_QUOTA_HOTKEY.md)在 macOS「快捷指令」中设置组合键（推荐 `⌃⌥⌘U`）。气泡使用官方 App Server，不需要浏览器或常驻监听程序，也不改变原生宠物交互。可点击关闭按钮或再次按同一快捷键关闭；为保留编辑焦点，Esc 需要先点击气泡。全局快捷键需在自己的 Mac 上实际验收。
+安装后按[快捷键配置指南](docs/MACOS_QUOTA_HOTKEY.md)在 macOS「快捷指令」中设置 `⌥Q`，或选择自己的组合。已有 `Codex Quota` 时可运行 `python3 scripts/quota_bubble.py shortcut` 打开其编辑器；只改键位无须重新编译气泡。气泡使用官方 App Server，不需要浏览器或常驻监听程序，也不改变原生宠物交互。可点击关闭按钮或再次按同一快捷键关闭；为保留编辑焦点，Esc 需要先点击气泡。全局快捷键需在自己的 Mac 上实际验收。
 
-Windows 和其他环境可继续使用以下命令。在项目根目录运行，使用本机已登录的 Codex CLI 一次性读取官方 App Server：
+Windows 可按[安装指南](docs/WINDOWS_QUOTA_HOTKEY.md)创建当前用户的额度快捷方式，建议 `Ctrl+Alt+Q`。它按需启动独立窗口，不安装常驻监听；Windows GUI 和快捷键需在 Windows 设备上实际验收。Windows 和其他环境也可使用以下命令。在项目根目录运行，使用本机已登录的 Codex CLI 一次性读取官方 App Server：
 
 ```bash
 python3 scripts/codex_usage.py --open          # 真实读取并打开本机私有额度页面
@@ -89,9 +91,9 @@ Windows 可将 `python3` 换成 `py`。`--open` 每次重新查询，在浏览�
 .venv/bin/python scripts/interactive_preview.py path/to/blue-whale-maid-v17 path/to/orange-scholar-v17 path/to/silver-dragon-v17
 ```
 
-在生成的 `workruns/v1_8-preview/index.html` 中切换角色，右键角色选择九个动作，或用“选择动作”按钮进行键盘操作。双击角色或点击“查看额度”，先按上面的命令生成快照，再通过卡片里的“选择 / 刷新快照”导入；重新查询后须再次选择文件。支持暂停、从头播放、循环、恢复待机、浅深背景和缩放。数据超过一小时或窗口重置时间已过时应重新查询。
+在生成的 `workruns/v1_8-preview/index.html` 中切换角色，单击角色查看快捷键提示，右键角色选择九个动作，或用“选择动作”按钮进行键盘操作。双击角色或点击“查看额度”，先按上面的命令生成快照，再通过卡片里的“选择 / 刷新快照”导入；重新查询后须再次选择文件。支持暂停、从头播放、循环、恢复待机、浅深背景和缩放。数据超过一小时或窗口重置时间已过时应重新查询。
 
-**这些手势只作用于本地预览页。** 官方公开接口目前没有自定义原生双击、右键菜单或外部动作调度；详见[交互能力边界](docs/NATIVE_INTERACTION_LIMITS.md)。安装原生宠物不会自动增加这些手势。
+**这些手势只作用于本地预览页。** 官方公开接口目前没有自定义原生点击提示、双击、右键菜单或外部动作调度；详见[交互能力边界](docs/NATIVE_INTERACTION_LIMITS.md)。安装原生宠物不会自动增加这些手势。
 
 ## 验收范围
 
@@ -104,6 +106,7 @@ Windows 可将 `python3` 换成 `py`。`--open` 每次重新查询，在浏览�
 | `validate_pet.py` | 检查 manifest、资源路径、图集尺寸与透明格 |
 | `preview_pet.py` | 生成九个 GIF 和浅深底接触图 |
 | `codex_usage.py` | 一次性读取 Codex 套餐额度，并可写入本地快照 |
+| `quota_bubble.py`、`windows_quota.py` | 按平台安装、检查和卸载额度气泡入口 |
 | `interactive_preview.py` | 为三套本地图集生成交互预览入口 |
 | `audit_motion.py` | 检查 GIF 解码帧、时长及与图集的对应关系 |
 | `install_pet.py` | dry-run、冲突保护、备份及安装后哈希检查 |

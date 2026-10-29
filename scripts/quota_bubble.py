@@ -193,6 +193,26 @@ def uninstall(root):
     return {'status': 'UNINSTALLED'}
 
 
+def open_shortcut_editor():
+    """Open an existing shortcut for the user to set its key; never change bindings."""
+    if sys.platform != 'darwin':
+        raise ValueError('快捷指令编辑器仅支持 macOS。')
+    executable = shutil.which('shortcuts')
+    if not executable:
+        raise ValueError('未找到 macOS 快捷指令命令，请手动打开快捷指令应用。')
+    listed = subprocess.run([executable, 'list'], capture_output=True, text=True, timeout=15)
+    if listed.returncode:
+        raise ValueError('无法检查快捷指令，请手动打开快捷指令应用。')
+    matches = sum(line.strip() == 'Codex Quota' for line in listed.stdout.splitlines())
+    if matches != 1:
+        reason = '未找到 Codex Quota，请先按指南创建。' if matches == 0 else '存在多个 Codex Quota，请在应用中自行选择。'
+        raise ValueError(reason + ' 详见 docs/MACOS_QUOTA_HOTKEY.md。')
+    opened = subprocess.run([executable, 'view', 'Codex Quota'], capture_output=True, text=True, timeout=15)
+    if opened.returncode:
+        raise ValueError('无法打开快捷指令编辑器，请手动打开 Codex Quota。')
+    return {'status': 'OPENED', 'next_step': '在详情中删除旧键位，设置 Option+Q 或自选组合，再自行测试。'}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
@@ -202,17 +222,22 @@ def main(argv=None):
         if name == 'install':
             item.add_argument('--dry-run', action='store_true')
             item.add_argument('--codex-cli', help='指定本机 Codex CLI 的绝对路径')
+    sub.add_parser('shortcut', help='打开已有 Codex Quota 以便手动设置快捷键')
     args = parser.parse_args(argv)
     try:
         if args.command == 'install':
             result = install(args.install_dir, args.codex_cli, args.dry_run)
         elif args.command == 'verify':
             result = verify(args.install_dir)
-        else:
+        elif args.command == 'uninstall':
             result = uninstall(args.install_dir)
+        else:
+            result = open_shortcut_editor()
     except (ValueError, OSError, subprocess.SubprocessError, json.JSONDecodeError) as exc:
         print('操作未完成：' + str(exc), file=sys.stderr)
         return 1
+    if args.command == 'install':
+        result['shortcut_suggestion'] = 'Option+Q；运行 python3 scripts/quota_bubble.py shortcut 打开已有快捷指令，或按指南创建。'
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 

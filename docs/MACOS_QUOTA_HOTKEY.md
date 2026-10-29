@@ -26,6 +26,8 @@ python3 scripts/quota_bubble.py install --codex-cli "/absolute/path/to/codex"
 
 ## 配置全局快捷键
 
+已创建 `Codex Quota` 的用户，可以运行 `python3 scripts/quota_bubble.py shortcut` 直接打开它的编辑器，再自行修改键位。该命令不读取其他快捷指令的内容，也不修改任何绑定；如果未找到或存在重名，会提示你手动选择。新用户先按以下步骤创建一次。
+
 1. 打开 macOS「快捷指令」，新建名为 `Codex Quota` 的快捷指令。
 2. 添加「运行 Shell 脚本」操作，内容填写：
 
@@ -34,9 +36,11 @@ python3 scripts/quota_bubble.py install --codex-cli "/absolute/path/to/codex"
    ```
 
 3. 如果系统提示脚本操作已停用，请自行决定是否在「快捷指令 → 设置 → 高级」启用「允许运行脚本」。此设置也影响其他脚本操作；仅运行你信任的脚本。
-4. 在快捷指令详情中选择「添加键盘快捷键」，按 `⌃⌥⌘U`。若与其他应用冲突，可自行选择其他组合。
+4. 在快捷指令详情中选择「添加键盘快捷键」，按 `⌥Q`（Option+Q）。已有 `Codex Quota` 的用户：打开该快捷指令的详情，先删除原组合键，再设置 `⌥Q`。仅修改键位无需重新安装或编译气泡。
 5. 分别在 Finder、浏览器和 Codex 前台按组合键，确认气泡先显示查询中，再显示真实额度。再次按同一组合键应关闭，下一次按键应重新查询；不要将从终端启动等同于全局快捷键验收。
 6. 在 Codex 中再次打开气泡，点击气泡内空白处后按 Esc，确认气泡关闭并能继续编辑；也检查关闭按钮和重试按钮。无需记录或分享额度数字。
+
+`⌥Q` 可能已被系统、其他应用或输入法使用；某些键盘布局用 Option 输入特殊字符。遇到冲突或影响输入时，请自行换一个组合并重新测试；工具不会自动更改或回退系统快捷键。气泡中的按键仅为建议，实际绑定以快捷指令详情为准。
 
 [Apple：在 Mac 工作时运行快捷指令](https://support.apple.com/guide/shortcuts-mac/apd163eb9f95/mac) · [Apple：脚本安全设置](https://support.apple.com/guide/shortcuts-mac/advanced-shortcuts-settings-apdfeb05586f/mac)
 
