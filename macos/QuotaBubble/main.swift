@@ -47,6 +47,12 @@ final class FlippedView: NSView {
     override var isFlipped: Bool { true }
     override var needsPanelToBecomeKey: Bool { true }
     override var acceptsFirstResponder: Bool { true }
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+}
+
+final class ActionButton: NSButton {
+    // A non-activating panel must respond to the very first mouse click.
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 }
 
 final class BubbleController: NSObject, NSApplicationDelegate, NSWindowDelegate {
@@ -105,9 +111,13 @@ final class BubbleController: NSObject, NSApplicationDelegate, NSWindowDelegate 
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         if !closing {
-            placePanel()
-            panel.orderFrontRegardless()
-            if task == nil { showLoading(); startQuery() }
+            if panel.isVisible {
+                panel.close()
+            } else {
+                placePanel()
+                panel.orderFrontRegardless()
+                if task == nil { showLoading(); startQuery() }
+            }
         }
         return false
     }
@@ -132,7 +142,7 @@ final class BubbleController: NSObject, NSApplicationDelegate, NSWindowDelegate 
     }
 
     private func button(_ title: String, action: Selector, x: CGFloat, buttonWidth: CGFloat) -> NSButton {
-        let b = NSButton(title: title, target: self, action: action)
+        let b = ActionButton(title: title, target: self, action: action)
         b.bezelStyle = .rounded
         b.frame = NSRect(x: x, y: y, width: buttonWidth, height: 28)
         document.addSubview(b)
@@ -143,7 +153,7 @@ final class BubbleController: NSObject, NSApplicationDelegate, NSWindowDelegate 
         document = FlippedView(frame: NSRect(x: 0, y: 0, width: width, height: 500))
         scroll.documentView = document
         y = 17
-        let close = NSButton(title: "×", target: self, action: #selector(closeBubble))
+        let close = ActionButton(title: "×", target: self, action: #selector(closeBubble))
         close.isBordered = false
         close.font = .systemFont(ofSize: 22, weight: .regular)
         close.toolTip = "关闭"
@@ -158,7 +168,8 @@ final class BubbleController: NSObject, NSApplicationDelegate, NSWindowDelegate 
     private func endContent() {
         y += 10
         _ = button("查看官方 Usage", action: #selector(openUsage), x: side, buttonWidth: 135)
-        _ = button("重试", action: #selector(retryQuery), x: width - side - 70, buttonWidth: 70)
+        _ = button("重试", action: #selector(retryQuery), x: 163, buttonWidth: 70)
+        _ = button("关闭", action: #selector(closeBubble), x: width - side - 88, buttonWidth: 88)
         y += 40
         let mouse = NSEvent.mouseLocation
         let screen = NSScreen.screens.first(where: { $0.frame.contains(mouse) }) ?? NSScreen.main

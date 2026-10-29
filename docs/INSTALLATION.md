@@ -78,6 +78,8 @@ Computer Use 已明确拒绝控制 `com.openai.codex`；不得改用其他 GUI �
 
 可先进入[角色安装页面](https://l-zeus.github.io/codex-pet-atelier/)，选择角色并点击 **Open in Codex**，再在官方客户端完成安装。客户端的安装目录和 ID 由客户端决定；各角色的安装结果仍需在实际设备上确认。
 
+如果 Codex 打开后没有出现安装窗口，可在本项目目录创建虚拟环境并安装依赖后运行 `.venv/bin/python scripts/install_release_pet.py --all`（Windows 使用 `.venv/Scripts/python.exe`），或把 `--all` 换成一个角色 ID。工具读取并校验固定 V1.7 资源，不覆盖已有不同的同名角色。也可用 `--release-dir` 指向已下载的 V1.7 ZIP 目录，再按提示刷新宠物列表。
+
 备用方式：下载并解压 [V1.7 Release](https://github.com/L-zeus/codex-pet-atelier/releases/tag/v1.7.0) 中的三个角色 ZIP。macOS 默认将所需角色目录放到 `~/.codex/pets/`；Windows 默认放到 `%USERPROFILE%\.codex\pets\`。如设置 `CODEX_HOME`，使用该目录下的 `pets`。已有同名目录时先备份，不要覆盖。随后在应用 Settings → Pets 刷新并选择。
 
 直接查看额度：在项目目录运行 `python3 scripts/codex_usage.py --open`，一次查询后自动打开本机私有页面；刷新时重新运行命令。Windows 使用 `py scripts\codex_usage.py --open`。页面位于 Git 忽略的 `workruns/`，请勿分享。也可用 `--output workruns/codex-usage.json` 写入仅本地的快照，供动作预览页手动导入。

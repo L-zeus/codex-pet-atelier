@@ -14,6 +14,8 @@
 
 安装页使用 V1.7 固定版本图集和[官方安装链接格式](https://learn.chatgpt.com/docs/app/commands)；客户端的一键安装仍需在用户设备上实际确认。手动安装、ZIP 和原生宠物动画保持可用。
 
+如果点击后 Codex 打开但没有出现安装窗口，可按下方步骤创建 Python 虚拟环境、安装项目依赖，然后运行 `.venv/bin/python scripts/install_release_pet.py --all`（Windows 使用 `.venv/Scripts/python.exe`）。工具核验 V1.7 固定版本资源并安装三位角色；已有不同的同名角色会被保护，不会覆盖。完成后在 Codex 的 Pets 设置中刷新并选择。
+
 ## 下载工具与 V1.7 素材
 
 工具代码与校验和见[工具发行页面](https://github.com/L-zeus/codex-pet-atelier/releases)。`--open` 需要 V1.9 或更新的工具；历史 [V1.8 工具版](https://github.com/L-zeus/codex-pet-atelier/releases/tag/v1.8.0)仍可下载。工具包仅含代码和文档；角色资源从 V1.7 Release 单独获取。
@@ -55,7 +57,7 @@ python3 scripts/quota_bubble.py install
 python3 scripts/quota_bubble.py verify
 ```
 
-安装后按[快捷键配置指南](docs/MACOS_QUOTA_HOTKEY.md)在 macOS「快捷指令」中设置组合键（推荐 `⌃⌥⌘U`）。气泡使用官方 App Server，不需要浏览器或常驻监听程序，也不改变原生宠物交互。为保留正在编辑的输入焦点，先点击气泡再按 Esc 才能关闭；也可直接点击关闭按钮。全局快捷键需在自己的 Mac 上实际验收。
+安装后按[快捷键配置指南](docs/MACOS_QUOTA_HOTKEY.md)在 macOS「快捷指令」中设置组合键（推荐 `⌃⌥⌘U`）。气泡使用官方 App Server，不需要浏览器或常驻监听程序，也不改变原生宠物交互。可点击关闭按钮或再次按同一快捷键关闭；为保留编辑焦点，Esc 需要先点击气泡。全局快捷键需在自己的 Mac 上实际验收。
 
 Windows 和其他环境可继续使用以下命令。在项目根目录运行，使用本机已登录的 Codex CLI 一次性读取官方 App Server：
 

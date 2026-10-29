@@ -27,8 +27,10 @@ FILES = (
     'scripts/clean_chroma.py', 'scripts/extract_companion_frames.py', 'scripts/install_pet.py',
     'scripts/package_code.py', 'scripts/package_local.py', 'scripts/package_release.py', 'scripts/petlib.py',
     'scripts/preview_pet.py', 'scripts/validate_pet.py', 'scripts/codex_usage.py',
-    'scripts/interactive_preview.py', 'scripts/build_install_site.py', 'scripts/quota_bubble.py', 'site/styles.css', 'site/releases-v1.7.0.json',
-    'tests/test_install_site.py', 'tests/test_quota_bubble.py', 'tests/test_chroma.py', 'tests/test_codex_usage.py', 'tests/test_preview.js',
+    'scripts/interactive_preview.py', 'scripts/build_install_site.py', 'scripts/install_release_pet.py', 'scripts/quota_bubble.py', 'site/styles.css', 'site/releases-v1.7.0.json',
+    'site/manifests/v1.7.0/blue-whale-maid-v17/pet.json', 'site/manifests/v1.7.0/orange-scholar-v17/pet.json',
+    'site/manifests/v1.7.0/silver-dragon-v17/pet.json',
+    'tests/test_install_site.py', 'tests/test_release_install.py', 'tests/test_quota_bubble.py', 'tests/test_chroma.py', 'tests/test_codex_usage.py', 'tests/test_preview.js',
     'tests/test_code_package.py', 'tests/test_companion.py', 'tests/test_publication.py',
     'tests/test_tools.py',
 )

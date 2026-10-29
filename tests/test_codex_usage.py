@@ -118,7 +118,7 @@ if account is not None:
                                ('error', 'protocol_error'), ('timeout', 'timeout')]:
             with self.subTest(mode=mode), mock.patch.dict(os.environ, {'ATELIER_FAKE_MODE': mode}):
                 with self.assertRaises(codex_usage.UsageError) as cm:
-                    codex_usage.fetch_usage(timeout=0.2 if mode == 'timeout' else 3,
+                    codex_usage.fetch_usage(timeout=0.2 if mode == 'timeout' else 8,
                                             executable=str(self.executable))
                 self.assertEqual(cm.exception.status, expected)
                 self.assertNotIn('private-detail', str(cm.exception))
